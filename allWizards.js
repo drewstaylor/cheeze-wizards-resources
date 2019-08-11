@@ -15,5 +15,6 @@ const sortByPowerLevel = function (a, b) {
     return comparison;
 };
 
-wizards.sort(sortByPowerLevel);
-console.log(wizards);
+// Sort Wizards By Power Level
+let wizardsByPowerLevel = wizards.sort(sortByPowerLevel);
+//console.log(wizardsByPowerLevel);
