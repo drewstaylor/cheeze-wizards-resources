@@ -9,6 +9,8 @@ const Wizards = require('./wizards');
 const apiToken = process.env.API_TOKEN;
 const apiUser = process.env.API_EMAIL;
 const apiBaseUrl = process.env.API_URL;
+const mainnetTournamentContract = process.env.API_MAINNET_TOURNAMENT_CONTRACT;
+const imageStorageUrl = process.env.API_IMAGE_STORAGE_URL + mainnetTournamentContract + '/';
 
 // Utility Functions
 const apiQuery = async (endpoint = null, method = 'GET', scheme = 'https://') => {
@@ -45,6 +47,7 @@ const apiQuery = async (endpoint = null, method = 'GET', scheme = 'https://') =>
         });
     
     // Handle response
+    response = JSON.parse(response);
     return response;
 };
 
@@ -65,9 +68,9 @@ const getAllWizards = async () => {
 };
 
 /**
- * Gets a link to a particular Wizard's image (Mainnet)
- * @param {Number} id: The ID of the target Wizard you are requesting an image link for
- * @return {Mixed} image: Returns the string image URL of the wizard or boolean `FALSE` if no Wizard, or no Image link exists
+ * Gets a particular Wizard by its Wizard ID (Mainnet)
+ * @param {Number} id: The ID of the target Wizard
+ * @return {Mixed} : Returns a wizard object or boolean `FALSE` if no Wizard exists with that ID
  */
 const getWizardById = async (id = null) => {
     // Nothing to do here...
@@ -80,7 +83,20 @@ const getWizardById = async (id = null) => {
     return wizards;
 };
 
-
+/**
+ * Gets a link to a particular Wizard's image (Mainnet)
+ * @param {Number} id: The ID of the target Wizard you are requesting an image link for
+ * @return {Mixed} image: Returns the string image URL of the wizard or boolean `FALSE` if no Wizard, or no Image link exists
+ */
+const getWizardImageUrlById = (id = null) => {
+    // Nothing to do here...
+    if (!id) {
+        return false;
+    }
+    // Set image path
+    let imageUrl = imageStorageUrl + id + '.svg';
+    return imageUrl;
+};
 
 // Tests
 let construct = async () => {
@@ -91,9 +107,10 @@ let construct = async () => {
     // Load a particular Wizard
     let wizard = 1614;
     let drewsWizard = await getWizardById(wizard);
-    console.log(drewsWizard);
-
-    // Get the image url of a particular wizard
+    // Add the wizard's image url
+    let drewsWizardImage = getWizardImageUrlById(wizard);
+    drewsWizard.image = drewsWizardImage;
+    console.log('Wizard', drewsWizard);
 };
 
 construct();
