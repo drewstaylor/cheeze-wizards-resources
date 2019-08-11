@@ -1,0 +1,8 @@
+Cheeze Wizards Resources
+************************
+
+WizardPresale address: https://rinkeby.etherscan.io/address/0xd8E4C31D8EB7baD28909a3D2E2dCa6AACDaB1563
+WizardGuild address: https://rinkeby.etherscan.io/address/0xb4acd2c618eb426a8e195cca2194c0903372ac0d
+GateKeeper address: https://rinkeby.etherscan.io/address/0x0b8e854004e9ab81a3316b59065563d5718ded32
+Tournament address: https://rinkeby.etherscan.io/address/0x108fc97479ec5e0ab8e68584b3ea9518be78beb4
+

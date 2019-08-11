@@ -1,0 +1,17 @@
+# Request
+curl -X GET "https://cheezewizards.alchemyapi.io/wizards/1" \
+-H "Content-Type: application/json" \
+-H "x-api-token: PFJKqO5Hv9RJmrnoX_QMDRdUK1I7IwKwnewRDq58" \
+-H "x-email: drew@infiniteinternet.ca"
+
+# Request
+curl "https://cheezewizards.alchemyapi.io/duels" \
+-H "Content-Type: application/json" \
+-H "x-api-token: PFJKqO5Hv9RJmrnoX_QMDRdUK1I7IwKwnewRDq58" \
+-H "x-email: drew@infiniteinternet.ca"
+
+# Request
+curl "https://cheezewizards.alchemyapi.io/wizards" \
+-H "Content-Type: application/json" \
+-H "x-api-token: PFJKqO5Hv9RJmrnoX_QMDRdUK1I7IwKwnewRDq58" \
+-H "x-email: drew@infiniteinternet.ca"
