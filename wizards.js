@@ -1,6 +1,5 @@
 const json = require('./allWizards.json');
-
-let wizards = json.wizards;
+const Wizards = json.wizards;
 
 const sortByPowerLevel = function (a, b) {
     let powerLevelA = Number(a.power);
@@ -15,6 +14,22 @@ const sortByPowerLevel = function (a, b) {
     return comparison;
 };
 
+const sortByWizardId = function (a, b) {
+    let wizardIdA = Number(a.id);
+    let wizardIdB = Number(b.id);
+    let comparison = 0;
+    // Compare
+    if (wizardIdA > wizardIdB) {
+        comparison = 1;
+    } else if (wizardIdA < wizardIdB) {
+        comparison = -1;
+    }
+    return comparison;
+};
 // Sort Wizards By Power Level
-let wizardsByPowerLevel = wizards.sort(sortByPowerLevel);
+//let wizardsByPowerLevel = Wizards.sort(sortByPowerLevel);
 //console.log(wizardsByPowerLevel);
+
+// Sort Wizards by ID
+let wizardsById = Wizards.sort(sortByWizardId);
+console.log(wizardsById);
