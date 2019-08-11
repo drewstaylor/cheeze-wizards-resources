@@ -71,6 +71,11 @@ const getOptimalOponnent = function (affinity) {
     }
 };
 
+/**
+ * Sort the Wizards array by Wizard power level
+ * @param {Number} a 
+ * @param {Number} b 
+ */
 const sortByPowerLevel = function (a, b) {
     let powerLevelA = Number(a.power);
     let powerLevelB = Number(b.power);
@@ -84,6 +89,11 @@ const sortByPowerLevel = function (a, b) {
     return comparison;
 };
 
+/**
+ * Sort the Wizards array by Wizard unique ID
+ * @param {Number} a 
+ * @param {Number} b 
+ */
 const sortByWizardId = function (a, b) {
     let wizardIdA = Number(a.id);
     let wizardIdB = Number(b.id);
@@ -97,6 +107,28 @@ const sortByWizardId = function (a, b) {
     return comparison;
 };
 
+/**
+ * Group the Wizards by their Affinity type and add helper props: 
+ * `a.specialPower`, `a.vulnerablity`, `a.optimalOpponent`
+ * 
+ * e.g.:
+ * 
+ * { 
+ *   id: '4251',
+ *   owner: '0xC4347246c9469ca4d740Cd2927d38b5EaB354df8',
+ *   affinity: 4,
+ *   initialPower: '842504048959613',
+ *   power: '842504048959613',
+ *   eliminatedBlockNumber: null,
+ *   createdBlockNumber: 7801214,
+ *   specialPower: 'Water',
+ *   vulnerability: 'Wind',
+ *   optimalOpponent: 'Fire' 
+ * }
+ * 
+ * @param {Number} a 
+ * @param {Number} b 
+ */
 const groupWizardsByAffinity = function (a, b) {
     let wizardAffinityA = Number(a.affinity);
     let wizardAffinityB = Number(b.affinity);
@@ -117,10 +149,6 @@ const groupWizardsByAffinity = function (a, b) {
     return comparison;
 };
 
-// Group Wizards by Affinty Type
-let wizardsByAffinity = Wizards.sort(groupWizardsByAffinity);
-//console.log(wizardsByAffinity);
-
 // Sort Wizards by Power Level
 let wizardsByPowerLevel = Wizards.sort(sortByPowerLevel);
 //console.log(wizardsByPowerLevel);
@@ -128,3 +156,8 @@ let wizardsByPowerLevel = Wizards.sort(sortByPowerLevel);
 // Sort Wizards by ID
 let wizardsById = Wizards.sort(sortByWizardId);
 //console.log(wizardsById);
+
+// Group Wizards by Affinty Type
+let wizardsByAffinity = Wizards.sort(groupWizardsByAffinity);
+//console.log(wizardsByAffinity);
+//console.log(wizardsByAffinity.reverse());
