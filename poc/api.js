@@ -52,7 +52,7 @@ const apiQuery = async (endpoint = null, method = 'GET', scheme = 'https://') =>
 /**
  * API Parsers & Getters
  * 
- * XXX TODO: Make this an exportable module (atm can still be require()'d)
+ * XXX TODO: Make this an exportable module? (atm it can still be require()'d)
  */
 
 /**
@@ -69,7 +69,7 @@ const getAllWizards = async () => {
  * @param {Number} id: The ID of the target Wizard you are requesting an image link for
  * @return {Mixed} image: Returns the string image URL of the wizard or boolean `FALSE` if no Wizard, or no Image link exists
  */
-const getWizardImageById = async (id = null) => {
+const getWizardById = async (id = null) => {
     // Nothing to do here...
     if (!id) {
         return false;
@@ -85,13 +85,15 @@ const getWizardImageById = async (id = null) => {
 // Tests
 let construct = async () => {
     // Load all of the summoned Wizards
-    let allWizards = await getAllWizards();
+    //let allWizards = await getAllWizards();
     //console.log('Wizards =>', allWizards);
 
     // Load a particular Wizard
     let wizard = 1614;
-    let drewsWizard = await getWizardImageById(wizard);
+    let drewsWizard = await getWizardById(wizard);
     console.log(drewsWizard);
+
+    // Get the image url of a particular wizard
 };
 
 construct();
