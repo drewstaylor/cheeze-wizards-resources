@@ -1,6 +1,9 @@
 const json = require('./allWizards.json');
 const Wizards = json.wizards;
 
+// My wizard:
+// https://opensea.io/assets/0x2f4bdafb22bd92aa7b7552d270376de8edccbc1e/1614
+
 /***
  * Affinities Mapping:
  * 0 = NOTSET, 
@@ -81,9 +84,9 @@ const sortByPowerLevel = function (a, b) {
     let powerLevelB = Number(b.power);
     let comparison = 0;
     // Compare
-    if (powerLevelA > powerLevelB) {
+    if (powerLevelA < powerLevelB) {
         comparison = 1;
-    } else if (powerLevelA < powerLevelB) {
+    } else if (powerLevelA > powerLevelB) {
         comparison = -1;
     }
     return comparison;
@@ -180,9 +183,13 @@ const groupWizardsByAffinity = function (a, b) {
  * ROUTINES - Uncomment any routing and debug log to run
  */
 
-// Sort Wizards by Power Level
-//let wizardsByPowerLevel = Wizards.sort(sortByPowerLevel);
-//console.log(wizardsByPowerLevel);
+// Sort Wizards by Power Level (strongest first)
+//let strongestWizards = Wizards.sort(sortByPowerLevel);
+//console.log(strongestWizards);
+
+// Sort Wizards by Power Level (weakest first)
+//let weakestWizards = strongestWizards.reverse();
+//console.log(weakestWizards);
 
 // Sort Wizards by ID
 //let wizardsById = Wizards.sort(sortByWizardId);
