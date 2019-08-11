@@ -31,7 +31,7 @@ const apiQuery = async (endpoint = null, method = 'GET', scheme = 'https://') =>
     };
 
     // Debug request options
-    console.log('req. options', options);
+    //console.log('req. options', options);
 
     // Make request
     let response;
@@ -49,7 +49,12 @@ const apiQuery = async (endpoint = null, method = 'GET', scheme = 'https://') =>
 };
 
 
-// Parsers & Getters
+/**
+ * API Parsers & Getters
+ * 
+ * XXX TODO: Make this an exportable module (atm can still be require()'d)
+ */
+
 /**
  * Loads all Wizards from CW API (Mainnet)
  */
@@ -65,16 +70,28 @@ const getAllWizards = async () => {
  * @return {Mixed} image: Returns the string image URL of the wizard or boolean `FALSE` if no Wizard, or no Image link exists
  */
 const getWizardImageById = async (id = null) => {
+    // Nothing to do here...
     if (!id) {
         return false;
     }
+
+    let wizardsEndpoint = 'wizards/' + id;
+    let wizards = await apiQuery(wizardsEndpoint);
+    return wizards;
 };
 
 
-// Implementations
+
+// Tests
 let construct = async () => {
+    // Load all of the summoned Wizards
     let allWizards = await getAllWizards();
-    console.log('Wizards =>', allWizards);
+    //console.log('Wizards =>', allWizards);
+
+    // Load a particular Wizard
+    let wizard = 1614;
+    let drewsWizard = await getWizardImageById(wizard);
+    console.log(drewsWizard);
 };
 
 construct();
