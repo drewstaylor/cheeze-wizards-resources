@@ -1,17 +1,19 @@
 # Request
 curl -X GET "https://cheezewizards.alchemyapi.io/wizards/1" \
 -H "Content-Type: application/json" \
--H "x-api-token: PFJKqO5Hv9RJmrnoX_QMDRdUK1I7IwKwnewRDq58" \
+-H "x-api-token: XXXXXXXXXXXXXXXXXXXX" \
 -H "x-email: drew@infiniteinternet.ca"
 
 # Request
 curl "https://cheezewizards.alchemyapi.io/duels" \
 -H "Content-Type: application/json" \
--H "x-api-token: PFJKqO5Hv9RJmrnoX_QMDRdUK1I7IwKwnewRDq58" \
+-H "x-api-token: XXXXXXXXXXXXXXXXXXXX" \
 -H "x-email: drew@infiniteinternet.ca"
 
 # Request
 curl "https://cheezewizards.alchemyapi.io/wizards" \
 -H "Content-Type: application/json" \
--H "x-api-token: PFJKqO5Hv9RJmrnoX_QMDRdUK1I7IwKwnewRDq58" \
+-H "x-api-token: XXXXXXXXXXXXXXXXXXXX" \
 -H "x-email: drew@infiniteinternet.ca"
+
+# Affinity Mapping: 0 = NOTSET, 1 = NEUTRAL, 2 = FIRE, 3 = WIND, 4 = WATER
