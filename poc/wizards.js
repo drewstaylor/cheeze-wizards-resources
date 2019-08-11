@@ -183,7 +183,7 @@ const groupWizardsByAffinity = function (a, b) {
 };
 
 /**
- * ROUTINES - Uncomment any routing and debug log to run
+ * ROUTINES - Uncomment to debug
  */
 
 // Sort Wizards by Power Level (strongest first)
