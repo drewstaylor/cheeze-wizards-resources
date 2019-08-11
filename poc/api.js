@@ -42,8 +42,8 @@ const apiQuery = async (endpoint = null, method = 'GET', scheme = 'https://') =>
             response = data;
         })
         .catch((err) => {
-            console.log('Encountered error', err);
-            response = err;
+            //console.log('Encountered error', err);
+            response = err.response.body;
         });
     
     // Handle response
@@ -69,8 +69,8 @@ const getAllWizards = async () => {
 
 /**
  * Gets a particular Wizard by its Wizard ID (Mainnet)
- * @param {Number} id: The ID of the target Wizard
- * @return {Mixed} : Returns a wizard object or boolean `FALSE` if no Wizard exists with that ID
+ * @param {Number} id : The ID of the target Wizard
+ * @return {Object} : Returns a Wizard object, or returns an Error object if no Wizard with that ID exists
  */
 const getWizardById = async (id = null) => {
     // Nothing to do here...
@@ -85,8 +85,8 @@ const getWizardById = async (id = null) => {
 
 /**
  * Gets a link to a particular Wizard's image (Mainnet)
- * @param {Number} id: The ID of the target Wizard you are requesting an image link for
- * @return {Mixed} image: Returns the string image URL of the wizard or boolean `FALSE` if no Wizard, or no Image link exists
+ * @param {Number} id : The ID of the target Wizard you are requesting an image link for
+ * @return {String} image : Returns the string image URL of the wizard
  */
 const getWizardImageUrlById = (id = null) => {
     // Nothing to do here...
@@ -103,6 +103,22 @@ const getWizardImageUrlById = (id = null) => {
  */
 const getAllDuels = async () => {
     let duelsEndpoint = 'duels';
+    let duels = await apiQuery(duelsEndpoint);
+    return duels;
+};
+
+/**
+ * Gets a particular Duel by its Duel ID (Mainnet)
+ * @param {Number} id : The ID of the target Duel
+ * @return {Object} : Returns a Duel object, or returns an Error object if no duel with that ID exists
+ */
+const getDuelById = async (id = null) => {
+    // Nothing to do here...
+    if (!id) {
+        return false;
+    }
+
+    let duelsEndpoint = 'duels/' + id;
     let duels = await apiQuery(duelsEndpoint);
     return duels;
 };
@@ -124,6 +140,11 @@ let construct = async () => {
     // Load all duels
     let allDuels = await getAllDuels();
     console.log('Duels =>', allDuels);
+
+    // Load a particular Duel
+    //let duel = 1;
+    //let hypotheticalDuel = await getDuelById(duel);
+    //console.log('Duel =>', hypotheticalDuel);
 };
 
 construct();
