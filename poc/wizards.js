@@ -1,5 +1,8 @@
-const json = require('./allWizards.json');
+// Wizards
+const json = require('./json/allWizards.json');
 const Wizards = json.wizards;
+
+
 
 // My wizard:
 // https://opensea.io/assets/0x2f4bdafb22bd92aa7b7552d270376de8edccbc1e/1614
