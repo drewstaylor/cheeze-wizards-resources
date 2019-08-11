@@ -1,3 +1,5 @@
+'use strict';
+
 // Wizards
 const json = require('./json/allWizards.json');
 const Wizards = json.wizards;
