@@ -98,6 +98,15 @@ const getWizardImageUrlById = (id = null) => {
     return imageUrl;
 };
 
+/**
+ * Loads all Duels from CW API (Mainnet)
+ */
+const getAllDuels = async () => {
+    let duelsEndpoint = 'duels';
+    let duels = await apiQuery(duelsEndpoint);
+    return duels;
+};
+
 // Tests
 let construct = async () => {
     // Load all of the summoned Wizards
@@ -110,7 +119,11 @@ let construct = async () => {
     // Add the wizard's image url
     let drewsWizardImage = getWizardImageUrlById(wizard);
     drewsWizard.image = drewsWizardImage;
-    console.log('Wizard', drewsWizard);
+    console.log('Wizard =>', drewsWizard);
+
+    // Load all duels
+    let allDuels = await getAllDuels();
+    console.log('Duels =>', allDuels);
 };
 
 construct();

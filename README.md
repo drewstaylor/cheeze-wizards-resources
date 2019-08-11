@@ -28,4 +28,10 @@ curl "https://cheezewizards.alchemyapi.io/wizards" \
 -H "x-email: drew@infiniteinternet.ca"
 
 # Wizard Affinity Mappings: 
-0 = NOTSET, 1 = NEUTRAL, 2 = FIRE, 3 = WIND, 4 = WATER
+```
+0 = NOTSET, 
+1 = NEUTRAL, 
+2 = FIRE, 
+3 = WIND, 
+4 = WATER
+```
