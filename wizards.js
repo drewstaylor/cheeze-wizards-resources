@@ -120,7 +120,6 @@ const groupWizardsByAffinity = function (a, b) {
 // Group Wizards by Affinty Type
 let wizardsByAffinity = Wizards.sort(groupWizardsByAffinity);
 //console.log(wizardsByAffinity);
-console.log(wizardsByAffinity.reverse());
 
 // Sort Wizards by Power Level
 let wizardsByPowerLevel = Wizards.sort(sortByPowerLevel);
