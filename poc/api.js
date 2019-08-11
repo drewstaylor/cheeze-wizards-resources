@@ -120,6 +120,42 @@ const getDuelById = async (id = null) => {
 
     let duelsEndpoint = 'duels/' + id;
     let duels = await apiQuery(duelsEndpoint);
+    duels.id = id;
+    return duels;
+};
+
+/**
+ * Gets all Duels for a particular Wizard by Wizard ID (Mainnet)
+ * @param {Number} id : The ID of the target Wizard to query for Duel data
+ * @return {Object} : Returns a Duel object, or returns an Error object if no duel with that Wizard ID exists
+ */
+const getDuelsByWizardId = async (id = null) => {
+    // Nothing to do here...
+    if (!id) {
+        return false;
+    }
+
+    let duelsEndpoint = 'duels/?wizardIds=' + id;
+    let duels = await apiQuery(duelsEndpoint);
+    duels.wizards = [id];
+    return duels;
+};
+
+/**
+ * Gets all Duels 2 Wizards by their Wizard IDs (Mainnet)
+ * @param {Number} wizard_A : The ID of the target Wizard to query for Duel data
+ * @param {Number} wizard_B : The ID of the second target Wizard to query for Duel data
+ * @return {Object} : Returns a Duel object, or returns an Error object if no duel with that Wizard ID exists
+ */
+const getDuelsBetweenWizards = async (wizard_A = null, wizard_B = null) => {
+    // Nothing to do here...
+    if (!wizard_A || !wizard_B) {
+        return false;
+    }
+
+    let duelsEndpoint = 'duels/?wizardIds=' + wizard_A + ',' + wizard_B;
+    let duels = await apiQuery(duelsEndpoint);
+    duels.wizards = [wizard_A, wizard_B];
     return duels;
 };
 
@@ -141,10 +177,19 @@ let construct = async () => {
     let allDuels = await getAllDuels();
     console.log('Duels =>', allDuels);
 
-    // Load a particular Duel
-    //let duel = 1;
-    //let hypotheticalDuel = await getDuelById(duel);
-    //console.log('Duel =>', hypotheticalDuel);
+    // Load a particular Duel by its ID
+    let duel = 1;
+    let hypotheticalDuel = await getDuelById(duel);
+    console.log('Duel =>', hypotheticalDuel);
+
+    // Load all Duels for a particular Wizard
+    let drewsWizardDuels = await getDuelsByWizardId(wizard);
+    console.log('Wizard #' + wizard + ' Duels =>', drewsWizardDuels);
+
+    // Load Duel history of matches between 2 particular Wizards
+    let wizard2 = 1;
+    let duelsBetweenWizards = await getDuelsBetweenWizards(wizard, wizard2);
+    console.log('Duels between Wizard #' + wizard + ' and Wizard #1' + ' =>', duelsBetweenWizards);
 };
 
 construct();
