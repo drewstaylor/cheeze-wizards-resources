@@ -6,7 +6,7 @@
 Deployed Contracts:
 *******************
 
-Main Wizards address: https://rinkeby.etherscan.io/address/0xec2203e38116f09e21bc27443e063b623b01345a
+Mainnet Wizards address: https://etherscan.io/address/0xec2203e38116f09e21bc27443e063b623b01345a
 Wizard Presale address: https://rinkeby.etherscan.io/address/0xd8E4C31D8EB7baD28909a3D2E2dCa6AACDaB1563
 Wizard Guild address: https://rinkeby.etherscan.io/address/0xb4acd2c618eb426a8e195cca2194c0903372ac0d
 Wizards Gatekeeper address: https://rinkeby.etherscan.io/address/0x0b8e854004e9ab81a3316b59065563d5718ded32
