@@ -9,7 +9,8 @@ const Wizards = require('./wizards');
 const apiToken = process.env.API_TOKEN;
 const apiUser = process.env.API_EMAIL;
 const apiBaseUrl = process.env.API_URL;
-const mainnetTournamentContract = process.env.API_MAINNET_TOURNAMENT_CONTRACT;
+const mainnetTournamentContract = process.env.CONTRACT_MAINNET_TOURNAMENT;
+const mainnetWizardsContract = process.env.CONTRACT_MAINNET_WIZARDS;
 const imageStorageUrl = process.env.API_IMAGE_STORAGE_URL + mainnetTournamentContract + '/';
 
 // Utility Functions
