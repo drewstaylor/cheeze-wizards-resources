@@ -2,8 +2,8 @@
 
 // Dependencies
 require('dotenv').config({path: __dirname + '/.env'});
+require('./wizards');
 const request = require('request-promise');
-const Wizards = require('./wizards');
 
 // Environment
 const apiToken = process.env.API_TOKEN;
