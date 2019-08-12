@@ -58,7 +58,7 @@ const getVulnerability = function (affinity) {
  * @param {Number} affinity: the affinity input used to generate the vulnerability response
  * @return {Enum} affinities[i]
  */
-const getOptimalOponnent = function (affinity) {
+const getOptimalOponent = function (affinity) {
     switch(affinities[affinity]) {
         // Fire > Wind
         case FIRE:
@@ -177,10 +177,135 @@ const groupWizardsByAffinity = function (a, b) {
     // Vulnerability (Text)
     a.vulnerability = getVulnerability(a.affinity);
     // Powerful Against (Text)
-    a.optimalOpponent = getOptimalOponnent(a.affinity);
+    a.optimalOpponent = getOptimalOponent(a.affinity);
     // Return
     return comparison;
 };
+
+/**
+ * Takes 2 Wizards as inputs, returns the stronger Wizard or false if equal power
+ * @param {Object} a : Array containing the power level and ID of the first wizard
+ * @param {Number} b : Array containing the power level and ID of the second wizard
+ * @return {Mixed} `Wizard | Boolean` : Returns the Wizard `{Object}` of the stronger wizard, or `false` if both Wizards are equally powerful
+ */
+const compareWizardPowerLevels = function (a, b) {
+    let failed = false;
+    if (!a || !b) {
+        return failed;
+    }
+    
+    if (a.power && b.power) {
+        let powerA = parseInt(a.power);
+        let powerB = parseInt(b.power);
+        let prediction;
+
+        // Predict
+        if (powerA == powerB) {
+            return failed;
+        } else if (powerA > powerB && powerB < powerA) {
+            return a;
+        } else if (powerB > powerA && powerA < powerB) {
+            return b;
+        } else {
+            return failed;
+        }
+
+    } else {
+        return failed;
+    }
+}
+
+/**
+ * Takes 2 Wizards as inputs, returns the better suited Wizard or false if equivalent affinities
+ * @param {Object} a : Array containing the power level and ID of the first wizard
+ * @param {Number} b : Array containing the power level and ID of the second wizard
+ * @return {Mixed} `Wizard | Boolean` : Returns the Wizard `{Object}` of the better suited wizard, or `false` if both Wizards are equally suited or neutral
+ */
+const compareWizardAffinities = function (a, b) {
+    let failed = false;
+    if (!a || !b) {
+        return failed;
+    }
+
+    if (a.affinity && b.affinity) {
+
+        // If either Wizard is neutral, no data is available for which Wizard is better suited
+        if (affinities[a.affinity] == NEUTRAL || affinities[b.affinity == NEUTRAL]) {
+            return failed;
+        }
+
+        let firstWizardOptimalOponent = getOptimalOponent(a.affinity);
+        let secondWizardOptimalOponent = getOptimalOponent(b.affinity);
+        // Compare 
+        // 1) Clear Winner Wizard A
+        if (firstWizardOptimalOponent == affinities[b.affinity]) {
+            return a;
+        // 2) Clear Winner Wizard B
+        } else if (secondWizardOptimalOponent == affinities[a.affinity]) {
+            return b;
+        // 3) No clear winner
+        } else {
+            return failed;
+        }
+    } else {
+        return failed;
+    }
+}
+
+/**
+ * Compares 2 wizard objects based on Affinity and Power Level
+ * 
+ * Example return:
+ * 
+ *  { 
+ *      id: '1614',
+ *      owner: '0x023c74b67dfcf4c20875a079e59873d8bbe42449',
+ *      affinity: 2,
+ *      initialPower: '100973404296275',
+ *      power: '100973404296275',
+ *      eliminatedBlockNumber: null,
+ *      createdBlockNumber: 7780479,
+ *      image: 'https://storage.googleapis.com/cheeze-wizards-production/0xec2203e38116f09e21bc27443e063b623b01345a/1614.svg' 
+ *  }
+ * 
+ * 
+ * 
+ * @param {Object} a 
+ * @param {Object} b 
+ * @return {Mixed} `Prediction | Boolean` : Returns the Wizard `{Object}` of the predicted winner, or Boolean `false`
+ * if no winner can be predicted, or an Array`{Object}` containing both Wizards when affinity and power level comparisons differ
+ */
+const predictWinner = function (a, b) {
+    let failed = false;
+    if (!a || !b) {
+        return failed;
+    } else if (!a.affinity || !b.affinity) {
+        return failed;
+    } else if (!a.power || !b.power) {
+        return failed;
+    }
+
+    // Debug Prediction:
+    //console.log([a,b]);
+
+    // Generate Models
+    let higherPoweredWizard = compareWizardPowerLevels(a, b);
+    let betterSuitedWizard = compareWizardAffinities(a, b);
+
+    // Compare Models
+    // 1) No useable results
+    if (!higherPoweredWizard && !betterSuitedWizard) {
+        return failed;
+    } 
+    // 2) Clear winner
+    else if (higherPoweredWizard == betterSuitedWizard) {
+        return higherPoweredWizard;
+    }
+    // 3) Mixed results
+    else {
+        return [{higherPoweredWizard: higherPoweredWizard}, {betterSuitedWizard: betterSuitedWizard}];
+    }
+}
 
 /**
  * ROUTINES - Uncomment to debug
@@ -210,3 +335,9 @@ const groupWizardsByAffinity = function (a, b) {
 // Sort Wizards by weakest power gains (diminishing power levels)
 //let wizardsByDiminishingGrowth = wizardsByGrowth.reverse();
 //console.log(wizardsByDiminishingGrowth);
+
+// Compare 2 Wizards and predict their match outcome
+//let wizardA = Wizards[343];
+//let wizardB = Wizards[344];
+//let matchPrediction = predictWinner(wizardA, wizardB);
+//console.log('Match prediction =>', matchPrediction);
