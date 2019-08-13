@@ -1,0 +1,20 @@
+a {
+    cursor: pointer;
+}
+
+a:hover,
+a:active {
+    text-decoration: underline !important;
+}
+
+ul.list-group {
+    padding: 1.5rem;
+}
+
+ul.list-group li:hover {
+    opacity: 0.9;
+}
+
+ul.wizards-list {
+    list-style: none;
+}

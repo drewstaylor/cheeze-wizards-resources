@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>The Holy Cheese of Insight</title>
+
+    <!-- CSS Imports -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="css/style.css" rel="stylesheet">
+    <!-- JS Imports -->
+    <script type="text/javascript" src="js/vue.js"></script>
+</head>
+<body>
+    <div id="cheese-of-insight" class="container container-fluid main-content">
+        <h3>Welcome to the Holy Cheese of Insight!</h3>
+        <div class="img-main" v-if="navigation.state < 0">
+            <img class="img-fluid" src="img/holiness.jpg">
+        </div>
+        <div class="back-btn" v-else>
+            <a v-on:click="navigation.state = HOME_STATE">Back</a>
+        </div>
+        <div class="row navigation">
+            <ul class="list-group">
+                <li class="list-group-item view-all-wizards" v-bind:class="{active: navigation.state == VIEW_ALL_WIZARDS}">
+                    <a v-on:click="setNavigation(0);">Browse Wizards</a>
+                </li>
+                <li class="list-group-item predict-matches" v-bind:class="{active: navigation.state == PREDICT_MATCHES}">
+                    <a v-on:click="setNavigation(1);">Predict Match Outcomes</a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Browse All Wizards -->
+        <div class="row view-all-wizards" v-if="navigation.state == VIEW_ALL_WIZARDS">
+            <p v-if="isLoading">Loading Wizards...</p>
+            <div class="all-wizards" v-else>
+                <div class="wizard" v-for="(wizard, index) in wizardsPage">
+                    <ul class="wizards-list">
+                        <li>
+                            <a v-on:click="showWizard(wizard.id);">Cheeze Wizard #{{ wizard.id }}</a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- Paging -->
+                <div class="page-controls">
+                    <button class="btn btn-primary" v-on:click="previousWizardsPage();">Previous</button>
+                    <button class="btn btn-inverse" v-on:click="currentWizardsPage = 1;"><<</button>
+                    <button class="btn btn-inverse" v-on:click="currentWizardsPage = totalWizardsPages">>></button>
+                    <button class="btn btn-primary" v-on:click="nextWizardsPage();">Next</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Browse Single Wizard -->
+        <div class="row view-all-wizards" v-if="navigation.state == VIEW_SELECTED_WIZARD">
+            <p v-if="isLoading">Loading Wizards...</p>
+            <div class="single-wizard" v-if="currentWizard">
+                <h5 class="title">Cheeze Wizard #{{ currentWizard.id }}</h5>
+                <!-- Affinity -->
+                <div class="affinity">
+                    <p>
+                        <strong>Affinity:</strong> {{ currentWizard.specialPower }}
+                    </p>
+                </div>
+                <!-- Weak Against -->
+                <div class="vulnerability">
+                    <p>
+                        <strong>Weak Against:</strong> {{ currentWizard.vulnerability }}
+                    </p>
+                </div>
+                <!-- Strong Against -->
+                <div class="optimal-opponent">
+                        <p>
+                            <strong>Strong Against:</strong> {{ currentWizard.optimalOpponent }}
+                        </p>
+                    </div>
+                <div class="power-level">
+                    <p>
+                        <strong>Power Level:</strong> {{ currentWizard.power }}
+                    </p>
+                </div>
+                <div class="power-level">
+                    <p>
+                        <strong>Lifetime Power Growth:</strong> {{ currentWizard.power - currentWizard.initialPower }}
+                    </p>
+                </div>
+                <div>
+                    <p>XXX TODO: truncate decimals of power level stats</p>
+                </div>
+                <div class="cheese-wizard-image">
+                    <img class="img-fluid" :src="currentWizard.image">
+                </div>
+            </div>
+        </div>
+
+        <!-- Match Predictor -->
+        <div class="row match-predictor" v-if="navigation.state == PREDICT_MATCHES">
+            match predictor
+        </div>
+    </div>
+    <script type="text/javascript" src="build/app.js"></script>
+</body>
+</html>

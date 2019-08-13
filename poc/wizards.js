@@ -307,6 +307,29 @@ const predictWinner = function (a, b) {
     }
 }
 
+
+/**
+ * Adds the following extra parameters to a Wizard object: `wizard.specialPower`, `wizard.vulnerability`, `wizard.optimalOpponent`
+ * @param {Object} wizard : A Wizard object
+ * @return {Mixed} `Wizard | Boolean` : Returns the Wizard object taken as input but adds extra parameters or `false` if 
+ * any required data is missing from the object
+ */
+const getWizardMetadata = function (wizard) {
+    // Safety check
+    if (!wizard) {
+        return false;
+    } else if (!wizard.affinity) {
+        return false;
+    }
+    // Affinity (Text)
+    wizard.specialPower = affinities[wizard.affinity];
+    // Vulnerability (Text)
+    wizard.vulnerability = getVulnerability(wizard.affinity);
+    // Powerful Against (Text)
+    wizard.optimalOpponent = getOptimalOponent(wizard.affinity);
+    return wizard;
+}
+
 /**
  * ROUTINES - Uncomment to debug
  */
@@ -341,3 +364,17 @@ const predictWinner = function (a, b) {
 //let wizardB = Wizards[344];
 //let matchPrediction = predictWinner(wizardA, wizardB);
 //console.log('Match prediction =>', matchPrediction);
+
+module.exports = {
+    affinities: affinities,
+    getVulnerability: getVulnerability,
+    getOptimalOponent: getOptimalOponent,
+    sortByPowerLevel: sortByPowerLevel,
+    sortByPowerLevelGrowth: sortByPowerLevelGrowth,
+    sortByWizardId: sortByWizardId,
+    groupWizardsByAffinity: groupWizardsByAffinity,
+    compareWizardPowerLevels: compareWizardPowerLevels,
+    compareWizardAffinities: compareWizardAffinities,
+    getWizardMetadata: getWizardMetadata,
+    predictWinner: predictWinner
+}

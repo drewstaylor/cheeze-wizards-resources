@@ -1,17 +1,18 @@
 'use strict';
 
 // Dependencies
-require('dotenv').config({path: __dirname + '/.env'});
-require('./wizards');
+//require('dotenv').config({path: __dirname + '/.env'});
 const request = require('request-promise');
 
 // Environment
-const apiToken = process.env.API_TOKEN;
-const apiUser = process.env.API_EMAIL;
-const apiBaseUrl = process.env.API_URL;
-const mainnetTournamentContract = process.env.CONTRACT_MAINNET_TOURNAMENT;
-const mainnetWizardsContract = process.env.CONTRACT_MAINNET_WIZARDS;
-const imageStorageUrl = process.env.API_IMAGE_STORAGE_URL + mainnetTournamentContract + '/';
+
+// XXX TODO: Figure out a secure way to not share all of this :x
+const apiToken = 'PFJKqO5Hv9RJmrnoX_QMDRdUK1I7IwKwnewRDq58';
+const apiUser = 'drew@infiniteinternet.ca';
+const apiBaseUrl = 'cheezewizards.alchemyapi.io';
+const mainnetTournamentContract = '0xec2203e38116f09e21bc27443e063b623b01345a';
+const mainnetWizardsContract = '0x023C74B67dfCf4c20875A079e59873D8bBE42449';
+const imageStorageUrl = 'https://storage.googleapis.com/cheeze-wizards-production/' + mainnetTournamentContract + '/';
 
 // Utility Functions
 const apiQuery = async (endpoint = null, method = 'GET', scheme = 'https://') => {
@@ -43,7 +44,7 @@ const apiQuery = async (endpoint = null, method = 'GET', scheme = 'https://') =>
             response = data;
         })
         .catch((err) => {
-            //console.log('Encountered error', err);
+            console.log('Encountered error', err);
             response = err.response.body;
         });
     
@@ -92,6 +93,8 @@ const getWizardById = async (id = null) => {
 const getWizardImageUrlById = (id = null) => {
     // Nothing to do here...
     if (!id) {
+        return false;
+    } else if (typeof id !== "number") {
         return false;
     }
     // Set image path
@@ -163,8 +166,8 @@ const getDuelsBetweenWizards = async (wizard_A = null, wizard_B = null) => {
 // Tests
 let construct = async () => {
     // Load all of the summoned Wizards
-    //let allWizards = await getAllWizards();
-    //console.log('Wizards =>', allWizards);
+    let allWizards = await getAllWizards();
+    console.log('Wizards =>', allWizards);
 
     // Load a particular Wizard
     let wizard = 1614;
@@ -193,4 +196,15 @@ let construct = async () => {
     console.log('Duels between Wizard #' + wizard + ' and Wizard #1' + ' =>', duelsBetweenWizards);
 };
 
-construct();
+// Debug:
+//construct();
+
+module.exports = {
+    getAllWizards: getAllWizards,
+    getWizardById: getWizardById,
+    getWizardImageUrlById: getWizardImageUrlById,
+    getAllDuels: getAllDuels,
+    getDuelById: getDuelById,
+    getDuelsByWizardId: getDuelsByWizardId,
+    getDuelsBetweenWizards: getDuelsBetweenWizards
+}
