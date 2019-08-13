@@ -33305,7 +33305,7 @@ let vm = new Vue({
         },
         isLoading: false,
         currentWizardsPage: 1,
-        wizardsPageSize: 25,
+        wizardsPageSize: 10,
         totalWizardsPages: null,
         wizards: null,
         wizardsSortedBy: null,
