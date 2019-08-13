@@ -78,20 +78,20 @@ let vm = new Vue({
 
             switch(sorting) {
                 case SORTED_BY_POWER_LEVEL_STRONGEST:
-                    this.wizards = wizardsQuery.wizards.sort(this.wizardUtils.sortByPowerLevel);
+                    this.wizards.sort(this.wizardUtils.sortByPowerLevel);
                     this.wizardsSortedBy = SORTED_BY_POWER_LEVEL_STRONGEST;
                     break;
                 case SORTED_BY_POWER_LEVEL_WEAKEST:
-                    this.wizards = wizardsQuery.wizards.sort(this.wizardUtils.sortByPowerLevel);
+                    this.wizards.sort(this.wizardUtils.sortByPowerLevel);
                     this.wizards = this.wizards.reverse();
                     this.wizardsSortedBy = SORTED_BY_POWER_LEVEL_WEAKEST;
                     break;
                 case SORTED_BY_POWER_LEVEL_GROWTH_STRONGEST:
-                    this.wizards = wizardsQuery.wizards.sort(this.wizardUtils.sortByPowerLevelGrowth);
+                    this.wizards.sort(this.wizardUtils.sortByPowerLevelGrowth);
                     this.wizardsSortedBy = SORTED_BY_POWER_LEVEL_STRONGEST;
                     break;
                 case SORTED_BY_AFFINITY_GROUPINGS:
-                    this.wizards = wizardsQuery.wizards.sort(this.wizardUtils.groupWizardsByAffinity);
+                    this.wizards.sort(this.wizardUtils.groupWizardsByAffinity);
                     this.wizards = this.wizards.reverse();
                     this.wizardsSortedBy = SORTED_BY_AFFINITY_GROUPINGS;
                     break;
