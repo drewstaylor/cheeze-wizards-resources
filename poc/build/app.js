@@ -33298,6 +33298,11 @@ let vm = new Vue({
         VIEW_SELECTED_WIZARD: VIEW_SELECTED_WIZARD,
         PREDICT_MATCHES: PREDICT_MATCHES,
         HOME_STATE: HOME_STATE,
+        SORTED_BY_POWER_LEVEL_STRONGEST: SORTED_BY_POWER_LEVEL_STRONGEST,
+        SORTED_BY_POWER_LEVEL_WEAKEST: SORTED_BY_POWER_LEVEL_WEAKEST,
+        SORTED_BY_POWER_LEVEL_GROWTH_STRONGEST: SORTED_BY_POWER_LEVEL_GROWTH_STRONGEST,
+        SORTED_BY_POWER_LEVEL_GROWTH_WEAKEST: SORTED_BY_POWER_LEVEL_GROWTH_WEAKEST,
+        SORTED_BY_AFFINITY_GROUPINGS: SORTED_BY_AFFINITY_GROUPINGS,
         api: require('./api'),
         wizardUtils: require('./wizards'),
         navigation: {
@@ -33309,6 +33314,13 @@ let vm = new Vue({
         totalWizardsPages: null,
         wizards: null,
         wizardsSortedBy: null,
+        sortedBy: [
+            'Most powerful first',
+            'Push-overs first',
+            'Most growth',
+            'Least growth',
+            'Affinity'
+        ],
         currentWizard: null,
         currentOpposingWizard: null
     }),
@@ -33337,8 +33349,32 @@ let vm = new Vue({
             }
         },
         // Helpers / Utils.
-        setWizardsSorting: function () {
-            // TODO : Set user selected sorting type
+        setWizardsSorting: function (sorting = null) {
+            if (sorting == null || !this.wizards) {
+                return;
+            }
+
+            switch(sorting) {
+                case SORTED_BY_POWER_LEVEL_STRONGEST:
+                    this.wizards = wizardsQuery.wizards.sort(this.wizardUtils.sortByPowerLevel);
+                    this.wizardsSortedBy = SORTED_BY_POWER_LEVEL_STRONGEST;
+                    break;
+                case SORTED_BY_POWER_LEVEL_WEAKEST:
+                    this.wizards = wizardsQuery.wizards.sort(this.wizardUtils.sortByPowerLevel);
+                    this.wizards = this.wizards.reverse();
+                    this.wizardsSortedBy = SORTED_BY_POWER_LEVEL_WEAKEST;
+                    break;
+                case SORTED_BY_POWER_LEVEL_GROWTH_STRONGEST:
+                    this.wizards = wizardsQuery.wizards.sort(this.wizardUtils.sortByPowerLevelGrowth);
+                    this.wizardsSortedBy = SORTED_BY_POWER_LEVEL_STRONGEST;
+                    break;
+                case SORTED_BY_AFFINITY_GROUPINGS:
+                    this.wizards = wizardsQuery.wizards.sort(this.wizardUtils.groupWizardsByAffinity);
+                    this.wizards = this.wizards.reverse();
+                    this.wizardsSortedBy = SORTED_BY_AFFINITY_GROUPINGS;
+                    break;
+                
+            }
         },
         // Getters
         getAllWizards: async function () {
@@ -33347,9 +33383,9 @@ let vm = new Vue({
 
             // Get Wizards
             let wizardsQuery = await this.api.getAllWizards();
-            this.wizards = wizardsQuery.wizards.sort(this.wizardUtils.sortByPowerLevel);
 
             // Sort Wizards
+            this.wizards = wizardsQuery.wizards.sort(this.wizardUtils.sortByPowerLevel);
             this.wizardsSortedBy = SORTED_BY_POWER_LEVEL_STRONGEST;
 
             // Get pagination args.
@@ -33403,6 +33439,13 @@ let vm = new Vue({
                 return this.wizards.slice(pageStart, pageStart + this.wizardsPageSize);
             } else {
                 return [];
+            }
+        },
+        getSortedBy: function () {
+            if (this.wizardsSortedBy) {
+                return this.sortedBy[this.wizardsSortedBy];
+            } else {
+                return '';
             }
         }
     }

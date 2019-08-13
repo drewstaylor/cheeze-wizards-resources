@@ -19,12 +19,15 @@
         <div class="img-main" v-if="navigation.state < 0">
             <img class="img-fluid" src="img/holiness.jpg">
         </div>
+        <div class="back-btn" v-else-if="navigation.state == VIEW_SELECTED_WIZARD">
+                <a v-on:click="navigation.state = VIEW_ALL_WIZARDS">Back</a>
+            </div>
         <div class="back-btn" v-else>
             <a v-on:click="navigation.state = HOME_STATE">Back</a>
         </div>
         <div class="row navigation">
             <ul class="list-group">
-                <li class="list-group-item view-all-wizards" v-bind:class="{active: navigation.state == VIEW_ALL_WIZARDS}">
+                <li class="list-group-item view-all-wizards" v-bind:class="{active: navigation.state == VIEW_ALL_WIZARDS || navigation.state == VIEW_SELECTED_WIZARD}">
                     <a v-on:click="setNavigation(0);">Browse Wizards</a>
                 </li>
                 <li class="list-group-item predict-matches" v-bind:class="{active: navigation.state == PREDICT_MATCHES}">
@@ -37,6 +40,20 @@
         <div class="row view-all-wizards" v-if="navigation.state == VIEW_ALL_WIZARDS">
             <p v-if="isLoading">Loading Wizards...</p>
             <div class="all-wizards" v-else>
+                <div class="controls">
+                    <p>
+                        <strong>Currently sorting wizards by {{ getSortedBy }}</strong>
+                    </p>
+                    <p>
+                        <select v-model="wizardsSortedBy" v-on:change="setWizardsSorting(wizardsSortedBy)">
+                            <option v-bind:value="SORTED_BY_POWER_LEVEL_STRONGEST">{{ sortedBy[SORTED_BY_POWER_LEVEL_STRONGEST] }}</option>
+                            <option v-bind:value="SORTED_BY_POWER_LEVEL_WEAKEST">{{ sortedBy[SORTED_BY_POWER_LEVEL_WEAKEST] }}</option>
+                            <option v-bind:value="SORTED_BY_POWER_LEVEL_GROWTH_STRONGEST">{{ sortedBy[SORTED_BY_POWER_LEVEL_GROWTH_STRONGEST] }}</option>
+                            <option v-bind:value="SORTED_BY_POWER_LEVEL_GROWTH_WEAKEST">{{ sortedBy[SORTED_BY_POWER_LEVEL_GROWTH_WEAKEST] }}</option>
+                            <option v-bind:value="SORTED_BY_AFFINITY_GROUPINGS">{{ sortedBy[SORTED_BY_AFFINITY_GROUPINGS] }}</option>
+                        </select>
+                    </p>
+                </div>
                 <div class="wizard" v-for="(wizard, index) in wizardsPage">
                     <ul class="wizards-list">
                         <li>
@@ -82,7 +99,7 @@
                         <strong>Power Level:</strong> {{ currentWizard.power }}
                     </p>
                 </div>
-                <div class="power-level">
+                <div class="growth">
                     <p>
                         <strong>Lifetime Power Growth:</strong> {{ currentWizard.power - currentWizard.initialPower }}
                     </p>
