@@ -56,8 +56,11 @@
                 </div>
                 <div class="wizard" v-for="(wizard, index) in wizardsPage">
                     <ul class="wizards-list">
-                        <li>
-                            <a v-on:click="showWizard(wizard.id);">{{index + 1 }}) Cheeze Wizard #{{ wizard.id }}</a>
+                        <li v-if="currentWizardsPage !== 1">
+                            <a v-on:click="showWizard(wizard.id);">{{index + (currentWizardsPage * wizardsPageSize) +  1 }}) Cheeze Wizard #{{ wizard.id }}</a>
+                        </li>
+                        <li v-else>
+                            <a v-on:click="showWizard(wizard.id);">{{index +  1 }}) Cheeze Wizard #{{ wizard.id }}</a>
                         </li>
                     </ul>
                 </div>
