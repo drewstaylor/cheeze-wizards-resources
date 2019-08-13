@@ -33291,9 +33291,15 @@ const SORTED_BY_POWER_LEVEL_GROWTH_STRONGEST = 2;
 const SORTED_BY_POWER_LEVEL_GROWTH_WEAKEST = 3;
 const SORTED_BY_AFFINITY_GROUPINGS = 4;
 
+// Prediction types
+const PREDICTION_UNAVAILABLE = 0;
+const PREDICTION_TYPE_CLEAR_WINNER = 1;
+const PREDICTION_TYPE_MIXED_REVIEWS = 2;
+
 let vm = new Vue({
     el: '#cheese-of-insight',
     data: () => ({
+        // App constants
         VIEW_ALL_WIZARDS: VIEW_ALL_WIZARDS,
         VIEW_SELECTED_WIZARD: VIEW_SELECTED_WIZARD,
         PREDICT_MATCHES: PREDICT_MATCHES,
@@ -33303,8 +33309,13 @@ let vm = new Vue({
         SORTED_BY_POWER_LEVEL_GROWTH_STRONGEST: SORTED_BY_POWER_LEVEL_GROWTH_STRONGEST,
         SORTED_BY_POWER_LEVEL_GROWTH_WEAKEST: SORTED_BY_POWER_LEVEL_GROWTH_WEAKEST,
         SORTED_BY_AFFINITY_GROUPINGS: SORTED_BY_AFFINITY_GROUPINGS,
+        PREDICTION_UNAVAILABLE: PREDICTION_UNAVAILABLE,
+        PREDICTION_TYPE_CLEAR_WINNER: PREDICTION_TYPE_CLEAR_WINNER,
+        PREDICTION_TYPE_MIXED_REVIEWS: PREDICTION_TYPE_MIXED_REVIEWS,
+        // Dependencies
         api: require('./api'),
         wizardUtils: require('./wizards'),
+        // App
         navigation: {
             state: HOME_STATE
         },
@@ -33319,16 +33330,23 @@ let vm = new Vue({
             'Push-overs first',
             'Most growth',
             'Least growth',
-            'Affinity'
+            'Group by Affinity'
         ],
-        currentWizard: null,
-        currentOpposingWizard: null
+        currentWizard: {},
+        currentOpposingWizard: {},
+        matchPrediction: null,
+        predictionType: null
     }),
     mounted: async function () {
         //console.log('api', this.api);
     },
     methods: {
         setNavigation: function (state = null) {
+            // Change navigation state as required
+            if (this.navigation.state == state) {
+                return;
+            }
+            // Handle state change
             switch(state) {
                 // Show all Wizards
                 case VIEW_ALL_WIZARDS:
@@ -33366,7 +33384,7 @@ let vm = new Vue({
                     break;
                 case SORTED_BY_POWER_LEVEL_GROWTH_STRONGEST:
                     this.wizards.sort(this.wizardUtils.sortByPowerLevelGrowth);
-                    this.wizardsSortedBy = SORTED_BY_POWER_LEVEL_STRONGEST;
+                    this.wizardsSortedBy = SORTED_BY_POWER_LEVEL_GROWTH_STRONGEST;
                     break;
                 case SORTED_BY_AFFINITY_GROUPINGS:
                     this.wizards.sort(this.wizardUtils.groupWizardsByAffinity);
@@ -33417,6 +33435,73 @@ let vm = new Vue({
             // Disable loading
             this.isLoading = false;
             console.log('Current Wizard =>', this.currentWizard);
+        },
+        showPredictMatchOutcome: async function () {
+            if (!this.wizards) {
+                await this.getAllWizards();
+            }
+            // Handle pre-setting values
+            if (this.currentWizard.id) {
+                this.currentWizard.selectedId = this.currentWizard.id;
+            }
+            if (this.currentOpposingWizard.id) {
+                this.currentOpposingWizard.selectedId = this.currentOpposingWizard.id;
+            }
+            this.setNavigation(PREDICT_MATCHES);
+        },
+        predictMatchOutcome: async function (wizardId = null, opposingWizardId = null) {
+            let currentOpposingWizard;
+            if (!wizardId || !opposingWizardId) {
+                return false;
+            } else {
+                // Enable loading
+                wizardId = parseInt(wizardId);
+                opposingWizardId = parseInt(opposingWizardId);
+                this.isLoading = true;
+            }
+
+            // Load Wizard metrics as required
+            // Current Wizard
+            if (this.currentWizard.id) {
+                if (this.currentWizard.id !== this.currentWizard.selectedId) {
+                    // Load Wizard
+                    this.currentWizard = await this.api.getWizardById(wizardId);
+                }
+            } else {
+                // Load Wizard
+                this.currentWizard = await this.api.getWizardById(wizardId);
+            }
+            // Opposing Wizard
+            // Load Wizard
+            currentOpposingWizard = await this.api.getWizardById(opposingWizardId);
+
+            // Compare Wizard powers and affinities
+            this.matchPrediction = this.wizardUtils.predictWinner(this.currentWizard, currentOpposingWizard);
+            console.log('Prediction =>', this.matchPrediction);
+
+            // Prediction type
+            if (!this.matchPrediction) {
+                this.predictionType = PREDICTION_UNAVAILABLE;
+            } else if (Array.isArray(this.matchPrediction)) {
+                this.predictionType = PREDICTION_TYPE_MIXED_REVIEWS;
+            } else {
+                this.predictionType = PREDICTION_TYPE_CLEAR_WINNER;
+            }
+            //console.log('Prediction type', this.predictionType);
+
+            // Retain model properties
+            currentOpposingWizard.selectedId = opposingWizardId;
+            this.currentWizard.selectedId = wizardId;
+            
+            // Add the wizards image url and metadata
+            this.currentWizard.image = (this.currentWizard.hasOwnProperty('image')) ? this.currentWizard.image : this.api.getWizardImageUrlById(wizardId);
+            this.currentWizard = this.wizardUtils.getWizardMetadata(this.currentWizard);
+            currentOpposingWizard.image = this.api.getWizardImageUrlById(opposingWizardId);
+            this.currentOpposingWizard = this.wizardUtils.getWizardMetadata(currentOpposingWizard);
+
+            // Disable loading
+            this.isLoading = false;
+            console.log('Wizards Compared =>', [this.currentWizard, this.currentOpposingWizard]);
         },
         // Paging
         nextWizardsPage: function () {

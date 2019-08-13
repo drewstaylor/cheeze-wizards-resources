@@ -20,8 +20,11 @@
             <img class="img-fluid" src="img/holiness.jpg">
         </div>
         <div class="back-btn" v-else-if="navigation.state == VIEW_SELECTED_WIZARD">
-                <a v-on:click="navigation.state = VIEW_ALL_WIZARDS">Back</a>
-            </div>
+            <a v-on:click="navigation.state = VIEW_ALL_WIZARDS">Back</a>
+        </div>
+        <div class="back-btn" v-else-if="navigation.state == PREDICT_MATCHES && currentWizard">
+            <a v-on:click="navigation.state = VIEW_SELECTED_WIZARD">Back</a>
+        </div>
         <div class="back-btn" v-else>
             <a v-on:click="navigation.state = HOME_STATE">Back</a>
         </div>
@@ -30,11 +33,9 @@
                 <li class="list-group-item view-all-wizards" v-bind:class="{active: navigation.state == VIEW_ALL_WIZARDS || navigation.state == VIEW_SELECTED_WIZARD}">
                     <a v-on:click="setNavigation(0);">Browse Wizards</a>
                 </li>
-                <!--
                 <li class="list-group-item predict-matches" v-bind:class="{active: navigation.state == PREDICT_MATCHES}">
-                    <a v-on:click="setNavigation(1);">Predict Match Outcomes</a>
+                    <a v-on:click="showPredictMatchOutcome();">Predict Match Outcomes</a>
                 </li>
-                -->
             </ul>
         </div>
 
@@ -120,7 +121,156 @@
 
         <!-- Match Predictor -->
         <div class="row match-predictor" v-if="navigation.state == PREDICT_MATCHES">
-            match predictor
+            <h5>Match Predictor</h5>
+
+            <!-- Enter Wizards to Compare -->
+            <div class="choose-wizard row">
+                <p class="row current-wizard-label">
+                    <label for="current_wizard">My Wizard:</label>
+                </p>
+                <input type="number" name="current_wizard" min="0" max="99999" v-model="currentWizard.selectedId" placeholder="Enter your Wizard ID here">
+            </div>
+            <div class="choose-opponent row">
+                <p class="row opponent-wizard-label">
+                    <label for="current_wizard">My Opponent's Wizard:</label>
+                </p>
+                <input type="number" name="opposing_wizard" min="0" max="99999" v-model="currentOpposingWizard.selectedId" placeholder="Enter opponent's Wizard ID here">
+            </div>
+            <div class="predict predict-btn row">
+                <button class="btn btn-primary" v-on:click="predictMatchOutcome(currentWizard.selectedId, currentOpposingWizard.selectedId);" :disabled="!currentWizard || !currentOpposingWizard">Compare Wizards</button>
+            </div>
+
+            <!-- Prediction Results -->
+            <div class="match-prediction row" v-if="matchPrediction">
+                <!-- Nothing to predict -->
+                <div class="invalid-prediction" v-if="predictionType == PREDICTION_UNAVAILABLE">
+                    <p>Wizard #{{currentWizard.id}} and Wizard #{{ currentOpposingWizard.id }} appear to be evenly matched!</p>
+                </div>
+
+                <!-- Comparison Data -->
+                <div class="prediction-data" v-else>
+                    <!-- OP Wizard -->
+                    <p v-if="matchPrediction.higherPoweredWizard">
+                        <strong>Wizard #{{ matchPrediction.higherPoweredWizard.id }} is more powerful!</strong>
+                    </p>
+                    <!-- OP Wizard -->
+                    <div v-if="matchPrediction.id">
+                        <h5>Careful now, you've encountered one seriously sassy sorceror!</h5>
+                        <p>
+                            <strong>Wizard #{{ matchPrediction.id }} is more powerful!</strong>
+                        </p>
+                        <p>
+                            <strong>Wizard #{{ matchPrediction.id }} has an affinity advantage!</strong>
+                        </p>
+                    </div>
+                    <!-- Well Suited Wizard-->
+                    <p v-if="matchPrediction.betterSuitedWizard">
+                        <strong>Wizard #{{ matchPrediction.betterSuitedWizard.id }} has an affinity advantage!</strong>
+                    </p>
+                    
+                    <div v-if="matchPrediction[0]">
+                        <p v-if="matchPrediction[0].higherPoweredWizard">
+                            <strong>Wizard #{{ matchPrediction[0].higherPoweredWizard.id }} is more powerful!</strong>
+                        </p>
+                    </div>
+                    <div v-if="matchPrediction[1]">
+                        <p v-if="matchPrediction[1].betterSuitedWizard">
+                            <strong>Wizard #{{ matchPrediction[1].betterSuitedWizard.id }} has an affinity advantage!</strong>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Your Wizard -->
+                <div class="row view-wizard-details" v-if="matchPrediction">
+                    <div class="single-wizard my-wizard jumbotron" v-if="currentWizard">
+                        
+                        <h1 class="display-4">Your Wizard:</h1>
+                        <hr/>
+
+                        <h5 class="title">Cheeze Wizard #{{ currentWizard.id }}</h5>
+                        <!-- Affinity -->
+                        <div class="affinity">
+                            <p>
+                                <strong>Affinity:</strong> {{ currentWizard.specialPower }}
+                            </p>
+                        </div>
+                        <!-- Weak Against -->
+                        <div class="vulnerability">
+                            <p>
+                                <strong>Weak Against:</strong> {{ currentWizard.vulnerability }}
+                            </p>
+                        </div>
+                        <!-- Strong Against -->
+                        <div class="optimal-opponent">
+                                <p>
+                                    <strong>Strong Against:</strong> {{ currentWizard.optimalOpponent }}
+                                </p>
+                            </div>
+                        <div class="power-level">
+                            <p>
+                                <strong>Power Level:</strong> {{ currentWizard.power }}
+                            </p>
+                        </div>
+                        <div class="growth">
+                            <p>
+                                <strong>Lifetime Power Growth:</strong> {{ currentWizard.power - currentWizard.initialPower }}
+                            </p>
+                        </div>
+                        <div>
+                            <p>XXX TODO: truncate decimals of power level stats</p>
+                        </div>
+                        <div class="cheese-wizard-image cheese-wizard-image-small">
+                            <img class="img-fluid" :src="currentWizard.image">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Opponent's Wizard -->
+                <div class="row view-wizard-details" v-if="matchPrediction">
+                    <div class="single-wizard opponent-wizard jumbotron" v-if="currentOpposingWizard">
+
+                        <h1 class="display-4">Opponent's Wizard:</h1>
+                        <hr/>
+
+                        <h5 class="title">Cheeze Wizard #{{ currentOpposingWizard.id }}</h5>
+                        <!-- Affinity -->
+                        <div class="affinity">
+                            <p>
+                                <strong>Affinity:</strong> {{ currentOpposingWizard.specialPower }}
+                            </p>
+                        </div>
+                        <!-- Weak Against -->
+                        <div class="vulnerability">
+                            <p>
+                                <strong>Weak Against:</strong> {{ currentOpposingWizard.vulnerability }}
+                            </p>
+                        </div>
+                        <!-- Strong Against -->
+                        <div class="optimal-opponent">
+                                <p>
+                                    <strong>Strong Against:</strong> {{ currentOpposingWizard.optimalOpponent }}
+                                </p>
+                            </div>
+                        <div class="power-level">
+                            <p>
+                                <strong>Power Level:</strong> {{ currentOpposingWizard.power }}
+                            </p>
+                        </div>
+                        <div class="growth">
+                            <p>
+                                <strong>Lifetime Power Growth:</strong> {{ currentOpposingWizard.power - currentOpposingWizard.initialPower }}
+                            </p>
+                        </div>
+                        <div>
+                            <p>XXX TODO: truncate decimals of power level stats</p>
+                        </div>
+                        <div class="cheese-wizard-image cheese-wizard-image-small">
+                            <img class="img-fluid" :src="currentOpposingWizard.image">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
     <script type="text/javascript" src="build/app.js"></script>

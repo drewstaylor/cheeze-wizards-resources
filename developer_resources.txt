@@ -16,3 +16,7 @@ Image Storage Bucket XML:
 *************************
 Mainnet - https://storage.googleapis.com/cheeze-wizards-production/
 Rinkeby - ??
+
+OpenSea Traits Data
+*******************
+https://api.opensea.io/collection/cheezewizard/

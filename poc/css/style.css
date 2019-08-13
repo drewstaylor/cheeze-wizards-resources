@@ -1,3 +1,18 @@
+.row {
+    min-width: 100%;
+}
+
+input[type=number],
+input[type=text] {
+    min-width: 300px;
+    padding: 1rem;
+}
+
+p.current-wizard-label,
+p.opponent-wizard-label {
+    margin-top: 1rem;
+}
+
 a {
     cursor: pointer;
 }
@@ -17,4 +32,21 @@ ul.list-group li:hover {
 
 ul.wizards-list {
     list-style: none;
+}
+
+div.predict-btn,
+div.prediction-data {
+    margin-top: 1.5rem;
+}
+
+div.cheese-wizard-image-small {
+    max-width: 25vw;
+    height: auto;
+    margin: auto;
+}
+
+div.jumbotron {
+    width: 90vw;
+    margin: auto;
+    margin-bottom: 1.5rem;
 }
