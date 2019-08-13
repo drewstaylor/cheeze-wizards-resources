@@ -27,7 +27,7 @@ let vm = new Vue({
         },
         isLoading: false,
         currentWizardsPage: 1,
-        wizardsPageSize: 50,
+        wizardsPageSize: 25,
         totalWizardsPages: null,
         wizards: null,
         wizardsSortedBy: null,
