@@ -41,7 +41,7 @@ let vm = new Vue({
             'Push-overs first',
             'Most growth',
             'Least growth',
-            'Affinity'
+            'Group by Affinity'
         ],
         currentWizard: null,
         currentOpposingWizard: null
