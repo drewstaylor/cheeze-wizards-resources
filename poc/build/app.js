@@ -33442,11 +33442,7 @@ let vm = new Vue({
             }
         },
         getSortedBy: function () {
-            if (this.wizardsSortedBy) {
-                return this.sortedBy[this.wizardsSortedBy];
-            } else {
-                return '';
-            }
+            return this.sortedBy[this.wizardsSortedBy];
         }
     }
 });
