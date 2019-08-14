@@ -18,6 +18,10 @@ const PREDICTION_UNAVAILABLE = 0;
 const PREDICTION_TYPE_CLEAR_WINNER = 1;
 const PREDICTION_TYPE_MIXED_REVIEWS = 2;
 
+// Search types
+const PRIMARY_SEARCH = 1;
+const VULNERABILITY_SEARCH = 2;
+
 let vm = new Vue({
     el: '#cheese-of-insight',
     data: () => ({
@@ -34,6 +38,8 @@ let vm = new Vue({
         PREDICTION_UNAVAILABLE: PREDICTION_UNAVAILABLE,
         PREDICTION_TYPE_CLEAR_WINNER: PREDICTION_TYPE_CLEAR_WINNER,
         PREDICTION_TYPE_MIXED_REVIEWS: PREDICTION_TYPE_MIXED_REVIEWS,
+        PRIMARY_SEARCH: PRIMARY_SEARCH,
+        VULNERABILITY_SEARCH: VULNERABILITY_SEARCH,
         // Dependencies
         api: require('./api'),
         wizardUtils: require('./wizards'),
@@ -54,10 +60,21 @@ let vm = new Vue({
             'Least growth',
             'Group by Affinity'
         ],
+        affinities: [
+            'Unknown',
+            'Neutral',
+            'Fire',
+            'Wind',
+            'Water'
+        ],
         currentWizard: {},
         currentOpposingWizard: {},
         matchPrediction: null,
-        predictionType: null
+        predictionType: null,
+        wizardsSearchType: PRIMARY_SEARCH,
+        wizardsPrimaryFilter: '',
+        wizardsVulnerabilityFilter: '',
+        showSearch: false
     }),
     mounted: async function () {
         //console.log('api', this.api);
@@ -241,11 +258,47 @@ let vm = new Vue({
     },
     computed: {
         wizardsPage: function () {
-            if (this.wizards && this.currentWizardsPage) {
-                let pageStart = this.wizardsPageSize * this.currentWizardsPage;
-                return this.wizards.slice(pageStart, pageStart + this.wizardsPageSize);
+            let wizards,
+                filter;
+            // Returns Wizards filtered by ID or by Affinity
+            if (this.wizardsPrimaryFilter.length) {
+                filter = this.wizardsPrimaryFilter;
+                wizards = this.wizards.filter((wizard) => {
+                    if (wizard.id.toString().indexOf(filter) > -1) {
+                            return wizard;
+                    }
+                    if (this.affinities[wizard.affinity].toString().toLowerCase().indexOf(filter) > -1) {
+                        return wizard;
+                    }
+                });
+                if (wizards) {
+                    return wizards;
+                } else {
+                    return [];
+                }
+            // Returns Wizards filtered by Vulnerability
+            } else if (this.wizardsVulnerabilityFilter.length > 2) {
+                filter = this.wizardsVulnerabilityFilter;
+                wizards = this.wizards.filter((wizard) => {
+                    let weakness = this.wizardUtils.getVulnerability(parseInt(wizard.affinity));
+                    if (weakness.indexOf(filter) > -1) {
+                        return wizard;
+                    }
+                });
+                if (wizards) {
+                    return wizards;
+                } else {
+                    return [];
+                }
+            // Returns Wizards
             } else {
-                return [];
+                wizards = this.wizards;
+                if (wizards && this.currentWizardsPage) {
+                    let pageStart = this.wizardsPageSize * this.currentWizardsPage;
+                    return wizards.slice(pageStart, pageStart + this.wizardsPageSize);
+                } else {
+                    return [];
+                }
             }
         },
         getSortedBy: function () {

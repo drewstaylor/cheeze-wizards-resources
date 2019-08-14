@@ -43,7 +43,53 @@
         <div class="row view-all-wizards" v-if="navigation.state == VIEW_ALL_WIZARDS">
             <p v-if="isLoading">Loading Wizards...</p>
             <div class="all-wizards" v-else>
+
+                <!-- Wizards Search -->
+                <div class="search-toggle">
+                    <a v-on:click="showSearch = true;" v-if="!showSearch">Can't find what you're looking for? Click here to search Wizards</a>
+                </div>
+                
+                <div class="row container search-controls" v-if="showSearch">
+                    <!-- Search Wizards by ID or Affinity -->
+                    <div class="search-wizards" v-if="wizardsSearchType == PRIMARY_SEARCH">
+                        <h3>Lost your Wizard again? Cheeze.</h3>
+                        <p class="descr">Type Affinities or Wizard IDs in the search box to search out vulnerable opponents.</p>
+                        <p class="descr">Example searches: "Fire", "1614".</p>
+                        <div>
+                            <input type="text" name="search_wizards_by_id_or_affinity" v-model="wizardsPrimaryFilter" placeholder="Search Wizards">
+                        </div>
+                        <!-- Search Options -->
+                        <div class="search-toggle">
+                            <p>
+                                <a v-on:click="wizardsSearchType = VULNERABILITY_SEARCH;">Switch to weaklings search mode</a>
+                            </p>
+                            <p>
+                                <a v-on:click="showSearch = false;">Hide Search</a>
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Search Wizards by Vulnerability -->
+                    <div class="search-wizards" v-if="wizardsSearchType == VULNERABILITY_SEARCH">
+                        <h3>Looking for weaknesses? You scoundrel.</h3>
+                        <p class="descr">Type Affinities in the search box to search out vulnerable opponents.</p>
+                        <p>Example search: "Water".</p>
+                        <div>
+                            <input type="text" name="search_wizards_by_vulnerability" v-model="wizardsVulnerabilityFilter" placeholder="Search Wizards">
+                        </div>
+                        <!-- Search Options -->
+                        <div class="search-toggle">
+                            <p>
+                                <a v-on:click="wizardsSearchType = PRIMARY_SEARCH;">Back to Cheeze Wiz search mode</a>
+                            </p>
+                            <p>
+                                <a v-on:click="showSearch = false;">Hide Search</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="controls">
+                    <!-- Sort / Group Wizards -->
                     <p>
                         <strong>Currently sorting wizards by {{ getSortedBy }}</strong>
                     </p>
@@ -68,7 +114,7 @@
                     </ul>
                 </div>
                 <!-- Paging -->
-                <div class="page-controls">
+                <div class="page-controls" v-if="!wizardsPrimaryFilter.length && !wizardsVulnerabilityFilter.length">
                     <button class="btn btn-primary" v-on:click="previousWizardsPage();">Previous</button>
                     <button class="btn btn-inverse" v-on:click="currentWizardsPage = 1;"><<</button>
                     <button class="btn btn-inverse" v-on:click="currentWizardsPage = totalWizardsPages">>></button>

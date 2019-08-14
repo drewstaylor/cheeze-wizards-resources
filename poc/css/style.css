@@ -2,10 +2,14 @@
     min-width: 100%;
 }
 
-input[type=number],
-input[type=text] {
+input[type=number] {
     min-width: 300px;
     padding: 1rem;
+}
+
+input[type=text] {
+    min-width: 300px;
+    padding: 0.5rem;
 }
 
 p.current-wizard-label,
@@ -49,4 +53,10 @@ div.jumbotron {
     width: 90vw;
     margin: auto;
     margin-bottom: 1.5rem;
+}
+
+div.search-toggle,
+div.search-controls {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
