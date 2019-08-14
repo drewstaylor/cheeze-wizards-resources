@@ -53,7 +53,7 @@
                     <!-- Search Wizards by ID or Affinity -->
                     <div class="search-wizards" v-if="wizardsSearchType == PRIMARY_SEARCH">
                         <h3>Lost your Wizard again? Cheeze.</h3>
-                        <p class="descr">Type Affinities or Wizard IDs in the search box to search out vulnerable opponents.</p>
+                        <p class="descr">Type an Affinity or Wizard ID in the search box to search Wizards.</p>
                         <p class="descr">Example searches: "Fire", "1614".</p>
                         <div>
                             <input type="text" name="search_wizards_by_id_or_affinity" v-model="wizardsPrimaryFilter" placeholder="Search Wizards">
@@ -71,8 +71,8 @@
                     <!-- Search Wizards by Vulnerability -->
                     <div class="search-wizards" v-if="wizardsSearchType == VULNERABILITY_SEARCH">
                         <h3>Looking for weaknesses? You scoundrel.</h3>
-                        <p class="descr">Type Affinities in the search box to search out vulnerable opponents.</p>
-                        <p>Example search: "Water".</p>
+                        <p class="descr">Type an Affinity in the search box to search out vulnerable opponents.</p>
+                        <p>Example searches: "Water", "Fire", "Wind", "Unknown".</p>
                         <div>
                             <input type="text" name="search_wizards_by_vulnerability" v-model="wizardsVulnerabilityFilter" placeholder="Search Wizards">
                         </div>
