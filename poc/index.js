@@ -160,7 +160,7 @@ let vm = new Vue({
 
             // Disable loading
             this.isLoading = false;
-            console.log('Wizards =>', this.wizards);
+            //console.log('Wizards =>', this.wizards);
         },
         showWizard: async function (wizardId = null) {
             if (wizardId == null) {
