@@ -109,7 +109,7 @@
                             <a v-on:click="showWizard(wizard.id);">{{index + (currentWizardsPage * wizardsPageSize) +  1 }}) Cheeze Wizard #{{ wizard.id }}</a>
                         </li>
                         <li v-else>
-                            <a v-on:click="showWizard(wizard.id);">{{index +  1 }}) Cheeze Wizard #{{ wizard.id }}</a>
+                            <a v-on:click="showWizard(wizard.id);">{{index +  1 }}) Cheeze Wizard #{{ wizard.id }} - <img class="icon" :src="'img/icons/' + affinities[wizard.affinity].toLowerCase() + '.svg'" v-if="wizard.affinity !== 0"></a> - {{ getPrettyPowerLevel(wizard.power) }}
                         </li>
                     </ul>
                 </div>
@@ -131,33 +131,33 @@
                 <!-- Affinity -->
                 <div class="affinity">
                     <p>
-                        <strong>Affinity:</strong> {{ currentWizard.specialPower }}
+                        <strong>Affinity:</strong>
+                        <img class="icon" :src="'img/icons/' + currentWizard.specialPower.toLowerCase() + '.svg'" v-if="currentWizard.specialPower && currentWizard.specialPower !== 'Unknown'"> {{ currentWizard.specialPower }}
                     </p>
                 </div>
                 <!-- Weak Against -->
                 <div class="vulnerability">
                     <p>
-                        <strong>Weak Against:</strong> {{ currentWizard.vulnerability }}
+                        <strong>Weak Against:</strong>
+                        <img class="icon" :src="'img/icons/' + currentWizard.vulnerability.toLowerCase() + '.svg'" v-if="currentWizard.vulnerability && currentWizard.vulnerability !== 'Unknown'"> {{ currentWizard.vulnerability }}
                     </p>
                 </div>
                 <!-- Strong Against -->
                 <div class="optimal-opponent">
                         <p>
-                            <strong>Strong Against:</strong> {{ currentWizard.optimalOpponent }}
+                            <strong>Strong Against:</strong>
+                            <img class="icon" :src="'img/icons/' + currentWizard.optimalOpponent.toLowerCase() + '.svg'" v-if="currentWizard.optimalOpponent && currentWizard.optimalOpponent !== 'Unknown'"> {{ currentWizard.optimalOpponent }}
                         </p>
                     </div>
                 <div class="power-level">
                     <p>
-                        <strong>Power Level:</strong> {{ currentWizard.power }}
+                        <strong>Power Level:</strong> {{ getPrettyPowerLevel(currentWizard.power) }}
                     </p>
                 </div>
                 <div class="growth">
                     <p>
-                        <strong>Lifetime Power Growth:</strong> {{ currentWizard.power - currentWizard.initialPower }}
+                        <strong>Lifetime Power Growth:</strong> {{ getPrettyPowerLevel(currentWizard.power - currentWizard.initialPower) }}
                     </p>
-                </div>
-                <div>
-                    <p>XXX TODO: truncate decimals of power level stats</p>
                 </div>
                 <div class="cheese-wizard-image">
                     <img class="img-fluid" :src="currentWizard.image">
@@ -237,33 +237,35 @@
                         <!-- Affinity -->
                         <div class="affinity">
                             <p>
-                                <strong>Affinity:</strong> {{ currentWizard.specialPower }}
+                                <strong>Affinity:</strong>
+                                <img class="icon" :src="'img/icons/' + currentWizard.specialPower.toLowerCase() + '.svg'" v-if="currentWizard.specialPower && currentWizard.specialPower !== 'Unknown'"> {{ currentWizard.specialPower }}
                             </p>
                         </div>
                         <!-- Weak Against -->
                         <div class="vulnerability">
                             <p>
-                                <strong>Weak Against:</strong> {{ currentWizard.vulnerability }}
+                                <strong>Weak Against:</strong>
+                                <img class="icon" :src="'img/icons/' + currentWizard.vulnerability.toLowerCase() + '.svg'" v-if="currentWizard.vulnerability && currentWizard.vulnerability !== 'Unknown'"> {{ currentWizard.vulnerability }}
                             </p>
                         </div>
                         <!-- Strong Against -->
                         <div class="optimal-opponent">
                                 <p>
-                                    <strong>Strong Against:</strong> {{ currentWizard.optimalOpponent }}
+                                    <strong>Strong Against:</strong>
+                                    <img class="icon" :src="'img/icons/' + currentWizard.optimalOpponent.toLowerCase() + '.svg'" v-if="currentWizard.optimalOpponent && currentWizard.optimalOpponent !== 'Unknown'"> {{ currentWizard.optimalOpponent }}
                                 </p>
                             </div>
                         <div class="power-level">
                             <p>
-                                <strong>Power Level:</strong> {{ currentWizard.power }}
+                                <strong>Power Level:</strong> {{ getPrettyPowerLevel(currentWizard.power) }}
                             </p>
                         </div>
                         <div class="growth">
                             <p>
-                                <strong>Lifetime Power Growth:</strong> {{ currentWizard.power - currentWizard.initialPower }}
+                                <strong>Lifetime Power Growth:</strong> {{ getPrettyPowerLevel(currentWizard.power - currentWizard.initialPower) }}
                             </p>
                         </div>
                         <div>
-                            <p>XXX TODO: truncate decimals of power level stats</p>
                         </div>
                         <div class="cheese-wizard-image cheese-wizard-image-small">
                             <img class="img-fluid" :src="currentWizard.image">
@@ -282,33 +284,33 @@
                         <!-- Affinity -->
                         <div class="affinity">
                             <p>
-                                <strong>Affinity:</strong> {{ currentOpposingWizard.specialPower }}
+                                <strong>Affinity:</strong>
+                                <img class="icon" :src="'img/icons/' + currentOpposingWizard.specialPower.toLowerCase() + '.svg'" v-if="currentOpposingWizard.specialPower && currentOpposingWizard.specialPower !== 'Unknown'"> {{ currentOpposingWizard.specialPower }}
                             </p>
                         </div>
                         <!-- Weak Against -->
                         <div class="vulnerability">
                             <p>
-                                <strong>Weak Against:</strong> {{ currentOpposingWizard.vulnerability }}
+                                <strong>Weak Against:</strong>
+                                <img class="icon" :src="'img/icons/' + currentOpposingWizard.vulnerability.toLowerCase() + '.svg'" v-if="currentOpposingWizard.vulnerability && currentOpposingWizard.vulnerability !== 'Unknown'"> {{ currentOpposingWizard.vulnerability }}
                             </p>
                         </div>
                         <!-- Strong Against -->
                         <div class="optimal-opponent">
                                 <p>
-                                    <strong>Strong Against:</strong> {{ currentOpposingWizard.optimalOpponent }}
+                                    <strong>Strong Against:</strong>
+                                    <img class="icon" :src="'img/icons/' + currentOpposingWizard.optimalOpponent.toLowerCase() + '.svg'" v-if="currentOpposingWizard.optimalOpponent && currentOpposingWizard.optimalOpponent !== 'Unknown'"> {{ currentOpposingWizard.optimalOpponent }}
                                 </p>
                             </div>
                         <div class="power-level">
                             <p>
-                                <strong>Power Level:</strong> {{ currentOpposingWizard.power }}
+                                <strong>Power Level:</strong> {{ getPrettyPowerLevel(currentOpposingWizard.power) }}
                             </p>
                         </div>
                         <div class="growth">
                             <p>
-                                <strong>Lifetime Power Growth:</strong> {{ currentOpposingWizard.power - currentOpposingWizard.initialPower }}
+                                <strong>Lifetime Power Growth:</strong> {{ getPrettyPowerLevel(currentOpposingWizard.power - currentOpposingWizard.initialPower) }}
                             </p>
-                        </div>
-                        <div>
-                            <p>XXX TODO: truncate decimals of power level stats</p>
                         </div>
                         <div class="cheese-wizard-image cheese-wizard-image-small">
                             <img class="img-fluid" :src="currentOpposingWizard.image">

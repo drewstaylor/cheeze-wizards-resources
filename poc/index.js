@@ -133,6 +133,12 @@ let vm = new Vue({
                 
             }
         },
+        getPrettyPowerLevel: function (powerLevel) {
+            if (isNaN(powerLevel)) {
+                return '';
+            }
+            return Math.round(powerLevel / 1000000000000);
+        },
         // Getters
         getAllWizards: async function () {
             // Loading state
