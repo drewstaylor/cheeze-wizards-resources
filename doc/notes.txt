@@ -1,0 +1,11 @@
+Dev call summary 13th Aug
+
+MVP rough feature list:
+- wizard browse / search
+- wizard viewer (image, power, affinity, traits when available)
+- stats comparison with other wizards (first step in match prediction)
+- match prediction that uses a Rinkeby contract to simulate an actual match against an AI controlling a wizard; initially it could be completely random choices for the AI opponent, a potential next step could be using historical data from wizard matches to tailor the AI so that it acts more human (as humans are bad at making random decisions, and this game is essentially rock/paper/scissors). this could also be a potential "premium" feature for monetisation
+- Our Rinkeby contract should be modified so we can mint wizards with given parameters (power, affinity) as they would change over time
+
+0x Bounty:
+- we want to try for the 0x bounty, so another very desirable feature is a futures market that uses our prediction data to back the odds and opens as soon as a wizard is challenged on chain and lets people bet on the outcome until the duel. good visuals for this are key too, as it combines the factors judges love: hitting a bounty, monetisation and virality
