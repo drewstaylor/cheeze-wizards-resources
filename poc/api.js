@@ -27,7 +27,7 @@ const apiQuery = async (endpoint = null, method = 'GET', scheme = 'https://') =>
     }
 
     // Request options
-    if (endpoint.indexOf('opensea') > -1 || endpoint.indexOf('googleapis') > -1) {
+    if (endpoint.indexOf('opensea') > -1 || endpoint.indexOf('infiniteinternet') > -1) {
         options = {
             method: method,
             uri: (endpoint.indexOf('infiniteinternet') > -1) ? endpoint : scheme + endpoint,
@@ -63,7 +63,7 @@ const apiQuery = async (endpoint = null, method = 'GET', scheme = 'https://') =>
             response = err.response.body;
         });
 
-    if (endpoint.indexOf('googleapis') > -1) {
+    if (endpoint.indexOf('infiniteinternet') > -1) {
         await parse(response).then( async (data) => {
             response = await JSON.stringify(data);
         });
@@ -122,7 +122,7 @@ const getWizardImageUrlById = (id = null, proxy = false) => {
     }
     // Set image path
     if (proxy) {
-        imageUrl = proxyImageStorageUrl + '?id=' + id + '.svg';
+        imageUrl = proxyImageStorageUrl + '?id=' + id;
     } else {
         imageUrl = imageStorageUrl + id + '.svg';
     }

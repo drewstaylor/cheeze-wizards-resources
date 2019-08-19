@@ -143,6 +143,14 @@ let vm = new Vue({
             }
             return Math.round(powerLevel / 1000000000000);
         },
+        getPrettyRarity: function (rarity) {
+            if (!rarity) {
+                rarity = TOTAL_WIZARDS;
+            } else if (isNaN(rarity)) {
+                return '';
+            }
+            return Math.round(100 * (parseInt(rarity) / TOTAL_WIZARDS));
+        },
         // Getters
         getAllWizards: async function () {
             // Loading state
@@ -180,7 +188,7 @@ let vm = new Vue({
             // Add the wizard's image url
             this.currentOpposingWizard.image = this.api.getWizardImageUrlById(wizardId);
             // Add traits
-            this.currentOpposingWizard.traits = this.api.getWizardTraitsById(wizardId);
+            this.currentOpposingWizard.traits = await this.api.getWizardTraitsById(wizardId);
             // Add metadata
             this.currentOpposingWizard = this.wizardUtils.getWizardMetadata(this.currentOpposingWizard);
             

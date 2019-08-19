@@ -33094,7 +33094,7 @@ const apiQuery = async (endpoint = null, method = 'GET', scheme = 'https://') =>
     }
 
     // Request options
-    if (endpoint.indexOf('opensea') > -1 || endpoint.indexOf('googleapis') > -1) {
+    if (endpoint.indexOf('opensea') > -1 || endpoint.indexOf('infiniteinternet') > -1) {
         options = {
             method: method,
             uri: (endpoint.indexOf('infiniteinternet') > -1) ? endpoint : scheme + endpoint,
@@ -33130,7 +33130,7 @@ const apiQuery = async (endpoint = null, method = 'GET', scheme = 'https://') =>
             response = err.response.body;
         });
 
-    if (endpoint.indexOf('googleapis') > -1) {
+    if (endpoint.indexOf('infiniteinternet') > -1) {
         await parse(response).then( async (data) => {
             response = await JSON.stringify(data);
         });
@@ -33189,7 +33189,7 @@ const getWizardImageUrlById = (id = null, proxy = false) => {
     }
     // Set image path
     if (proxy) {
-        imageUrl = proxyImageStorageUrl + '?id=' + id + '.svg';
+        imageUrl = proxyImageStorageUrl + '?id=' + id;
     } else {
         imageUrl = imageStorageUrl + id + '.svg';
     }
@@ -34393,6 +34393,14 @@ let vm = new Vue({
             }
             return Math.round(powerLevel / 1000000000000);
         },
+        getPrettyRarity: function (rarity) {
+            if (!rarity) {
+                rarity = TOTAL_WIZARDS;
+            } else if (isNaN(rarity)) {
+                return '';
+            }
+            return Math.round(100 * (parseInt(rarity) / TOTAL_WIZARDS));
+        },
         // Getters
         getAllWizards: async function () {
             // Loading state
@@ -34430,7 +34438,7 @@ let vm = new Vue({
             // Add the wizard's image url
             this.currentOpposingWizard.image = this.api.getWizardImageUrlById(wizardId);
             // Add traits
-            this.currentOpposingWizard.traits = this.api.getWizardTraitsById(wizardId);
+            this.currentOpposingWizard.traits = await this.api.getWizardTraitsById(wizardId);
             // Add metadata
             this.currentOpposingWizard = this.wizardUtils.getWizardMetadata(this.currentOpposingWizard);
             
