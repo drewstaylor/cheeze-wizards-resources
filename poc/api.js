@@ -1170,5 +1170,6 @@ module.exports = {
     getAllDuels: getAllDuels,
     getDuelById: getDuelById,
     getDuelsByWizardId: getDuelsByWizardId,
-    getDuelsBetweenWizards: getDuelsBetweenWizards
+    getDuelsBetweenWizards: getDuelsBetweenWizards,
+    getWizardTraitsById: getWizardTraitsById
 }

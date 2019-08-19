@@ -22,6 +22,9 @@ const PREDICTION_TYPE_MIXED_REVIEWS = 2;
 const PRIMARY_SEARCH = 1;
 const VULNERABILITY_SEARCH = 2;
 
+// Total Wizarsd
+const TOTAL_WIZARDS = 4882;
+
 let vm = new Vue({
     el: '#cheese-of-insight',
     data: () => ({
@@ -40,6 +43,7 @@ let vm = new Vue({
         PREDICTION_TYPE_MIXED_REVIEWS: PREDICTION_TYPE_MIXED_REVIEWS,
         PRIMARY_SEARCH: PRIMARY_SEARCH,
         VULNERABILITY_SEARCH: VULNERABILITY_SEARCH,
+        TOTAL_WIZARDS: TOTAL_WIZARDS,
         // Dependencies
         api: require('./api'),
         wizardUtils: require('./wizards'),
@@ -171,15 +175,18 @@ let vm = new Vue({
                 this.isLoading = true;
             }
             // Load Wizard
-            this.currentWizard = await this.api.getWizardById(wizardId);
+            this.currentOpposingWizard = await this.api.getWizardById(wizardId);
 
             // Add the wizard's image url
-            this.currentWizard.image = this.api.getWizardImageUrlById(wizardId);
-            this.currentWizard = this.wizardUtils.getWizardMetadata(this.currentWizard);
+            this.currentOpposingWizard.image = this.api.getWizardImageUrlById(wizardId);
+            // Add traits
+            this.currentOpposingWizard.traits = this.api.getWizardTraitsById(wizardId);
+            // Add metadata
+            this.currentOpposingWizard = this.wizardUtils.getWizardMetadata(this.currentOpposingWizard);
             
             // Disable loading
             this.isLoading = false;
-            console.log('Current Wizard =>', this.currentWizard);
+            console.log('Current Opposing Wizard =>', this.currentOpposingWizard);
         },
         showPredictMatchOutcome: async function () {
             if (!this.wizards) {

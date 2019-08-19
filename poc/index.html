@@ -132,35 +132,35 @@
                 <div class="affinity">
                     <p>
                         <strong>Affinity:</strong>
-                        <img class="icon" :src="'img/icons/' + currentWizard.specialPower.toLowerCase() + '.svg'" v-if="currentWizard.specialPower && currentWizard.specialPower !== 'Unknown'"> {{ currentWizard.specialPower }}
+                        <img class="icon" :src="'img/icons/' + currentOpposingWizard.specialPower.toLowerCase() + '.svg'" v-if="currentOpposingWizard.specialPower && currentOpposingWizard.specialPower !== 'Unknown'"> {{ currentOpposingWizard.specialPower }}
                     </p>
                 </div>
                 <!-- Weak Against -->
                 <div class="vulnerability">
                     <p>
                         <strong>Weak Against:</strong>
-                        <img class="icon" :src="'img/icons/' + currentWizard.vulnerability.toLowerCase() + '.svg'" v-if="currentWizard.vulnerability && currentWizard.vulnerability !== 'Unknown'"> {{ currentWizard.vulnerability }}
+                        <img class="icon" :src="'img/icons/' + currentOpposingWizard.vulnerability.toLowerCase() + '.svg'" v-if="currentOpposingWizard.vulnerability && currentOpposingWizard.vulnerability !== 'Unknown'"> {{ currentOpposingWizard.vulnerability }}
                     </p>
                 </div>
                 <!-- Strong Against -->
                 <div class="optimal-opponent">
                         <p>
                             <strong>Strong Against:</strong>
-                            <img class="icon" :src="'img/icons/' + currentWizard.optimalOpponent.toLowerCase() + '.svg'" v-if="currentWizard.optimalOpponent && currentWizard.optimalOpponent !== 'Unknown'"> {{ currentWizard.optimalOpponent }}
+                            <img class="icon" :src="'img/icons/' + currentOpposingWizard.optimalOpponent.toLowerCase() + '.svg'" v-if="currentOpposingWizard.optimalOpponent && currentOpposingWizard.optimalOpponent !== 'Unknown'"> {{ currentOpposingWizard.optimalOpponent }}
                         </p>
                     </div>
                 <div class="power-level">
                     <p>
-                        <strong>Power Level:</strong> {{ getPrettyPowerLevel(currentWizard.power) }}
+                        <strong>Power Level:</strong> {{ getPrettyPowerLevel(currentOpposingWizard.power) }}
                     </p>
                 </div>
                 <div class="growth">
                     <p>
-                        <strong>Lifetime Power Growth:</strong> {{ getPrettyPowerLevel(currentWizard.power - currentWizard.initialPower) }}
+                        <strong>Lifetime Power Growth:</strong> {{ getPrettyPowerLevel(currentOpposingWizard.power - currentOpposingWizard.initialPower) }}
                     </p>
                 </div>
                 <div class="cheese-wizard-image">
-                    <img class="img-fluid" :src="currentWizard.image">
+                    <img class="img-fluid" :src="currentOpposingWizard.image">
                 </div>
             </div>
         </div>
