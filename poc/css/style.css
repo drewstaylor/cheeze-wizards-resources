@@ -65,8 +65,7 @@ div.traits.traits-container {
     margin: auto;
 }
 
-div.block-item.block-item-outer {
+div.block-item.block-item-inner {
     background-color: aliceblue;
     height: 100%;
-    margin: 0.75rem;
 }
