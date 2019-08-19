@@ -33081,6 +33081,7 @@ const apiBaseUrl = 'cheezewizards.alchemyapi.io';
 const mainnetTournamentContract = '0xec2203e38116f09e21bc27443e063b623b01345a';
 const mainnetWizardsContract = '0x023C74B67dfCf4c20875A079e59873D8bBE42449';
 const imageStorageUrl = 'https://storage.googleapis.com/cheeze-wizards-production/' + mainnetTournamentContract + '/';
+const proxyImageStorageUrl = 'https://cheeseofinsight.infiniteinternet.ca/svg/';
 const openSeaTraits = 'api.opensea.io/collection/cheezewizard/';
 const traitsData = require('./json/wizardTraits.json');
 
@@ -33096,7 +33097,7 @@ const apiQuery = async (endpoint = null, method = 'GET', scheme = 'https://') =>
     if (endpoint.indexOf('opensea') > -1 || endpoint.indexOf('googleapis') > -1) {
         options = {
             method: method,
-            uri: (endpoint.indexOf('googleapis') > -1) ? endpoint : scheme + endpoint,
+            uri: (endpoint.indexOf('infiniteinternet') > -1) ? endpoint : scheme + endpoint,
             // Headers
             headers: {
                 'Content-Type': 'application/json'
@@ -33175,9 +33176,11 @@ const getWizardById = async (id = null) => {
 /**
  * Gets a link to a particular Wizard's image (Mainnet)
  * @param {Number} id : The ID of the target Wizard you are requesting an image link for
+ * @param {Boolean} proxy `{default: false}` : If parsing SVG can set this parameter to `true` to get a proxied instance that side steps CORS problems
  * @return {String} image : Returns the string image URL of the wizard
  */
-const getWizardImageUrlById = (id = null) => {
+const getWizardImageUrlById = (id = null, proxy = false) => {
+    let imageUrl;
     // Nothing to do here...
     if (!id) {
         return false;
@@ -33185,7 +33188,11 @@ const getWizardImageUrlById = (id = null) => {
         return false;
     }
     // Set image path
-    let imageUrl = imageStorageUrl + id + '.svg';
+    if (proxy) {
+        imageUrl = proxyImageStorageUrl + id + '.svg';
+    } else {
+        imageUrl = imageStorageUrl + id + '.svg';
+    }
     return imageUrl;
 };
 
@@ -33203,7 +33210,7 @@ const getWizardTraitsById = async (id = null) => {
     }
 
     // Fetch data
-    let wizardSvgUrl = getWizardImageUrlById(id);
+    let wizardSvgUrl = getWizardImageUrlById(id, true);
     //let traitsData = await apiQuery(openSeaTraits + '?format=json');
     let wizardSvg = await apiQuery(wizardSvgUrl);
     wizardSvg = wizardSvg.children;
