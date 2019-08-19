@@ -60,3 +60,13 @@ div.search-controls {
     margin-top: 1rem;
     margin-bottom: 1rem;
 }
+
+div.traits.traits-container {
+    margin: auto;
+}
+
+div.block-item.block-item-outer {
+    background-color: aliceblue;
+    height: 100%;
+    margin: 0.75rem;
+}
