@@ -33189,7 +33189,7 @@ const getWizardImageUrlById = (id = null, proxy = false) => {
     }
     // Set image path
     if (proxy) {
-        imageUrl = proxyImageStorageUrl + id + '.svg';
+        imageUrl = proxyImageStorageUrl + '?id=' + id + '.svg';
     } else {
         imageUrl = imageStorageUrl + id + '.svg';
     }
