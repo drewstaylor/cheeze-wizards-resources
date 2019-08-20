@@ -78,7 +78,9 @@ let vm = new Vue({
         wizardsSearchType: PRIMARY_SEARCH,
         wizardsPrimaryFilter: '',
         wizardsVulnerabilityFilter: '',
-        showSearch: false
+        showSearch: false,
+        showMyWizardTraits: false,
+        showOpponentTraits: false
     }),
     mounted: async function () {
         //console.log('api', this.api);
@@ -207,6 +209,10 @@ let vm = new Vue({
             if (this.currentOpposingWizard.id) {
                 this.currentOpposingWizard.selectedId = this.currentOpposingWizard.id;
             }
+            // If both Wizards are selected, run prediction routine immediately
+            if (this.currentWizard.selectedId && this.currentOpposingWizard.selectedId) {
+                this.predictMatchOutcome(this.currentWizard.selectedId, this.currentOpposingWizard.selectedId);
+            }
             this.setNavigation(PREDICT_MATCHES);
         },
         predictMatchOutcome: async function (wizardId = null, opposingWizardId = null) {
@@ -253,11 +259,18 @@ let vm = new Vue({
             currentOpposingWizard.selectedId = opposingWizardId;
             this.currentWizard.selectedId = wizardId;
             
-            // Add the wizards image url and metadata
+            // Add the Wizards' image urls and metadata
             this.currentWizard.image = (this.currentWizard.hasOwnProperty('image')) ? this.currentWizard.image : this.api.getWizardImageUrlById(wizardId);
             this.currentWizard = this.wizardUtils.getWizardMetadata(this.currentWizard);
             currentOpposingWizard.image = this.api.getWizardImageUrlById(opposingWizardId);
             this.currentOpposingWizard = this.wizardUtils.getWizardMetadata(currentOpposingWizard);
+            // Add Traits data
+            if (!this.currentWizard.traits) {
+                this.currentWizard.traits = await this.api.getWizardTraitsById(wizardId);
+            }
+            if (!this.currentOpposingWizard.traits) {
+                this.currentOpposingWizard.traits = await this.api.getWizardTraitsById(opposingWizardId);
+            }
 
             // Disable loading
             this.isLoading = false;

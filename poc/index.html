@@ -35,7 +35,7 @@
                     <a v-on:click="setNavigation(0);">Browse Wizards</a>
                 </li>
                 <li class="list-group-item predict-matches" v-bind:class="{active: navigation.state == PREDICT_MATCHES}">
-                    <a v-on:click="showPredictMatchOutcome();">Predict Match Outcomes</a>
+                    <a v-on:click="showPredictMatchOutcome();">Compare Wizards</a>
                 </li>
             </ul>
         </div>
@@ -125,47 +125,65 @@
         </div>
 
         <!-- Browse Single Wizard -->
-        <div class="row view-all-wizards" v-if="navigation.state == VIEW_SELECTED_WIZARD">
+        <div class="view-single-wizard" v-if="navigation.state == VIEW_SELECTED_WIZARD">
             <p v-if="isLoading">Loading Wizards...</p>
-            <div class="single-wizard" v-if="currentWizard">
-                <h5 class="title">Cheeze Wizard #{{ currentWizard.id }}</h5>
-                <!-- Affinity -->
-                <div class="affinity">
-                    <p>
-                        <strong>Affinity:</strong>
-                        <img class="icon" :src="'img/icons/' + currentOpposingWizard.specialPower.toLowerCase() + '.svg'" v-if="currentOpposingWizard.specialPower && currentOpposingWizard.specialPower !== 'Unknown'"> {{ currentOpposingWizard.specialPower }}
-                    </p>
-                </div>
-                <!-- Weak Against -->
-                <div class="vulnerability">
-                    <p>
-                        <strong>Weak Against:</strong>
-                        <img class="icon" :src="'img/icons/' + currentOpposingWizard.vulnerability.toLowerCase() + '.svg'" v-if="currentOpposingWizard.vulnerability && currentOpposingWizard.vulnerability !== 'Unknown'"> {{ currentOpposingWizard.vulnerability }}
-                    </p>
-                </div>
-                <!-- Strong Against -->
-                <div class="optimal-opponent">
+            <div class="single-wizard" v-if="currentOpposingWizard">
+                <!-- Left Pane - Wizard Image -->
+                <div class="selected-wizard-left">
+                    <!-- Title -->
+                    <h5 class="title">Cheeze Wizard #{{ currentOpposingWizard.id }}</h5>
+                    <!-- Affinity -->
+                    <div class="affinity">
+                        <p>
+                            <strong>Affinity:</strong>
+                            <img class="icon" :src="'img/icons/' + currentOpposingWizard.specialPower.toLowerCase() + '.svg'" v-if="currentOpposingWizard.specialPower && currentOpposingWizard.specialPower !== 'Unknown'"> {{ currentOpposingWizard.specialPower }}
+                        </p>
+                    </div>
+                    <!-- Weak Against -->
+                    <div class="vulnerability">
+                        <p>
+                            <strong>Weak Against:</strong>
+                            <img class="icon" :src="'img/icons/' + currentOpposingWizard.vulnerability.toLowerCase() + '.svg'" v-if="currentOpposingWizard.vulnerability && currentOpposingWizard.vulnerability !== 'Unknown'"> {{ currentOpposingWizard.vulnerability }}
+                        </p>
+                    </div>
+                    <!-- Strong Against -->
+                    <div class="optimal-opponent">
                         <p>
                             <strong>Strong Against:</strong>
                             <img class="icon" :src="'img/icons/' + currentOpposingWizard.optimalOpponent.toLowerCase() + '.svg'" v-if="currentOpposingWizard.optimalOpponent && currentOpposingWizard.optimalOpponent !== 'Unknown'"> {{ currentOpposingWizard.optimalOpponent }}
                         </p>
                     </div>
-                <div class="power-level">
-                    <p>
-                        <strong>Power Level:</strong> {{ getPrettyPowerLevel(currentOpposingWizard.power) }}
-                    </p>
+                    <!-- Power Level -->
+                    <div class="power-level">
+                        <p>
+                            <strong>Power Level:</strong> {{ getPrettyPowerLevel(currentOpposingWizard.power) }}
+                        </p>
+                    </div>
+                    <!-- Growth Stats -->
+                    <div class="growth">
+                        <p>
+                            <strong>Lifetime Power Growth:</strong> {{ getPrettyPowerLevel(currentOpposingWizard.power - currentOpposingWizard.initialPower) }}
+                        </p>
+                    </div>
+                    <!-- External Link -->
+                    <div class="external-link">
+                        <p>
+                            <a :href="'https://www.cheezewizards.com/wizard/' + currentOpposingWizard.id" target="_blank">View on cheezewizards.com <img class="icon external-link" src="img/icons/external_link.svg"></a>
+                        </p>
+                    </div>
                 </div>
-                <div class="growth">
-                    <p>
-                        <strong>Lifetime Power Growth:</strong> {{ getPrettyPowerLevel(currentOpposingWizard.power - currentOpposingWizard.initialPower) }}
-                    </p>
-                </div>
-                <div class="cheese-wizard-image">
-                    <img class="img-fluid" :src="currentOpposingWizard.image">
+
+                <!-- Right Pane - Wizard Image -->
+                <div class="selected-wizard-right">
+                    <div class="cheese-wizard-image selected-opponent-img" :style="'background-image: url(' + currentOpposingWizard.image + ')'">
+                        <!--
+                        <img class="img-fluid opponent-wizard-img" :src="currentOpposingWizard.image">
+                        -->
+                    </div>
                 </div>
             </div>
             <!-- Traits -->
-            <div class="traits traits-container" v-if="currentOpposingWizard.traits">
+            <div class="traits traits-container select-wizard" v-if="currentOpposingWizard.traits">
                 <div class="traits traits-container-inner" v-if="currentOpposingWizard.traits.rarities">
                     <div class="block-grid-xs-2 block-grid-sm-3 block-grid-md-4" v-if="currentOpposingWizard.traits.rarities.length">
                         <div class="block-item block-item-outer" v-if="currentOpposingWizard.traits.affinityStats && currentOpposingWizard.specialPower && currentOpposingWizard.specialPower !== 'Unknown'">
@@ -191,7 +209,7 @@
                                 <p class="affinity label">
                                     <strong>Affinity Type</strong>
                                 </p>
-                                <p class="affinity">{{ currentOpposingWizard.specialPower }}</p>
+                                <p class="affinity trait-name">{{ currentOpposingWizard.specialPower }}</p>
                                 <p class="rarity-index">1 of {{ currentOpposingWizard.traits.affinityStats[currentOpposingWizard.specialPower] }}</p>
                                 <p class="rarity-percentage">{{ getPrettyRarity(currentOpposingWizard.traits.affinityStats[currentOpposingWizard.specialPower]) }}% have this trait</p>
                             </div>
@@ -214,12 +232,12 @@
                                 <p class="backneck label">
                                     <strong>Backneck</strong>
                                 </p>
-                                <p class="backneck">{{ trait.backneck }}</p>
+                                <p class="backneck trait-name">{{ trait.backneck }}</p>
                                 <p class="rarity-index" v-if="trait.rarity">1 of {{ trait.rarity }}</p>
                                 <p class="rarity-index" v-else>1 of {{ TOTAL_WIZARDS }}</p>
                                 <p class="rarity-percentage">{{ getPrettyRarity(trait.rarity) }}% have this trait</p>
                                 <p class="extra-rare" v-if="trait.extraRare">
-                                    <span>Rare trait: {{ trait.extraRare }} collection!</span>
+                                    <span>Rare trait: {{ trait.extraRare }}</span>
                                 </p>
                             </div>
 
@@ -228,12 +246,12 @@
                                 <p class="backneck label">
                                     <strong>Boots</strong>
                                 </p>
-                                <p class="boots">{{ trait.boots }}</p>
+                                <p class="boots trait-name">{{ trait.boots }}</p>
                                 <p class="rarity-index" v-if="trait.rarity">1 of {{ trait.rarity }}</p>
                                 <p class="rarity-index" v-else>1 of {{ TOTAL_WIZARDS }}</p>
                                 <p class="rarity-percentage">{{ getPrettyRarity(trait.rarity) }}% have this trait</p>
                                 <p class="extra-rare" v-if="trait.extraRare">
-                                    <span>Rare trait: {{ trait.extraRare }} collection!</span>
+                                    <span>Rare trait: {{ trait.extraRare }}</span>
                                 </p>
                             </div>
 
@@ -242,12 +260,12 @@
                                 <p class="cape label">
                                     <strong>Cape</strong>
                                 </p>
-                                <p class="cape">{{ trait.cape }}</p>
+                                <p class="cape trait-name">{{ trait.cape }}</p>
                                 <p class="rarity-index" v-if="trait.rarity">1 of {{ trait.rarity }}</p>
                                 <p class="rarity-index" v-else>1 of {{ TOTAL_WIZARDS }}</p>
                                 <p class="rarity-percentage">{{ getPrettyRarity(trait.rarity) }}% have this trait</p>
                                 <p class="extra-rare" v-if="trait.extraRare">
-                                    <span>Rare trait: {{ trait.extraRare }} collection!</span>
+                                    <span>Rare trait: {{ trait.extraRare }}</span>
                                 </p>
                             </div>
 
@@ -256,12 +274,12 @@
                                 <p class="expression label">
                                     <strong>Expression</strong>
                                 </p>
-                                <p class="cape">{{ trait.expression }}</p>
+                                <p class="expression trait-name">{{ trait.expression }}</p>
                                 <p class="rarity-index" v-if="trait.rarity">1 of {{ trait.rarity }}</p>
                                 <p class="rarity-index" v-else>1 of {{ TOTAL_WIZARDS }}</p>
                                 <p class="rarity-percentage">{{ getPrettyRarity(trait.rarity) }}% have this trait</p>
                                 <p class="extra-rare" v-if="trait.extraRare">
-                                    <span>Rare trait: {{ trait.extraRare }} collection!</span>
+                                    <span>Rare trait: {{ trait.extraRare }}</span>
                                 </p>
                             </div>
 
@@ -270,12 +288,12 @@
                                 <p class="head label">
                                     <strong>Head</strong>
                                 </p>
-                                <p class="head">{{ trait.head }}</p>
+                                <p class="head trait-name">{{ trait.head }}</p>
                                 <p class="rarity-index" v-if="trait.rarity">1 of {{ trait.rarity }}</p>
                                 <p class="rarity-index" v-else>1 of {{ TOTAL_WIZARDS }}</p>
                                 <p class="rarity-percentage">{{ getPrettyRarity(trait.rarity) }}% have this trait</p>
                                 <p class="extra-rare" v-if="trait.extraRare">
-                                    <span>Rare trait: {{ trait.extraRare }} collection!</span>
+                                    <span>Rare trait: {{ trait.extraRare }}</span>
                                 </p>
                             </div>
 
@@ -284,12 +302,12 @@
                                 <p class="hat label">
                                     <strong>Hat</strong>
                                 </p>
-                                <p class="cape">{{ trait.hat }}</p>
+                                <p class="hat trait-name">{{ trait.hat }}</p>
                                 <p class="rarity-index" v-if="trait.rarity">1 of {{ trait.rarity }}</p>
                                 <p class="rarity-index" v-else>1 of {{ TOTAL_WIZARDS }}</p>
                                 <p class="rarity-percentage">{{ getPrettyRarity(trait.rarity) }}% have this trait</p>
                                 <p class="extra-rare" v-if="trait.extraRare">
-                                    <span>Rare trait: {{ trait.extraRare }} collection!</span>
+                                    <span>Rare trait: {{ trait.extraRare }}</span>
                                 </p>
                             </div>
 
@@ -298,12 +316,12 @@
                                 <p class="leftHandBack label">
                                     <strong>Left Hand Back</strong>
                                 </p>
-                                <p class="leftHandBack">{{ trait.leftHandBack }}</p>
+                                <p class="leftHandBack trait-name">{{ trait.leftHandBack }}</p>
                                 <p class="rarity-index" v-if="trait.rarity">1 of {{ trait.rarity }}</p>
                                 <p class="rarity-index" v-else>1 of {{ TOTAL_WIZARDS }}</p>
                                 <p class="rarity-percentage">{{ getPrettyRarity(trait.rarity) }}% have this trait</p>
                                 <p class="extra-rare" v-if="trait.extraRare">
-                                    <span>Rare trait: {{ trait.extraRare }} collection!</span>
+                                    <span>Rare trait: {{ trait.extraRare }}</span>
                                 </p>
                             </div>
 
@@ -312,12 +330,12 @@
                                 <p class="leftHandBack label">
                                     <strong>Left Hand Front</strong>
                                 </p>
-                                <p class="leftHandBack">{{ trait.leftHhandFront }}</p>
+                                <p class="leftHandFront trait-name">{{ trait.leftHhandFront }}</p>
                                 <p class="rarity-index" v-if="trait.rarity">1 of {{ trait.rarity }}</p>
                                 <p class="rarity-index" v-else>1 of {{ TOTAL_WIZARDS }}</p>
                                 <p class="rarity-percentage">{{ getPrettyRarity(trait.rarity) }}% have this trait</p>
                                 <p class="extra-rare" v-if="trait.extraRare">
-                                    <span>Rare trait: {{ trait.extraRare }} collection!</span>
+                                    <span>Rare trait: {{ trait.extraRare }}</span>
                                 </p>
                             </div>
 
@@ -326,12 +344,12 @@
                                 <p class="legs label">
                                     <strong>Legs</strong>
                                 </p>
-                                <p class="legs">{{ trait.legs }}</p>
+                                <p class="legs trait-name">{{ trait.legs }}</p>
                                 <p class="rarity-index" v-if="trait.rarity">1 of {{ trait.rarity }}</p>
                                 <p class="rarity-index" v-else>1 of {{ TOTAL_WIZARDS }}</p>
                                 <p class="rarity-percentage">{{ getPrettyRarity(trait.rarity) }}% have this trait</p>
                                 <p class="extra-rare" v-if="trait.extraRare">
-                                    <span>Rare trait: {{ trait.extraRare }} collection!</span>
+                                    <span>Rare trait: {{ trait.extraRare }}</span>
                                 </p>
                             </div>
 
@@ -340,12 +358,12 @@
                                 <p class="rightHandFront label">
                                     <strong>Right Hand Front</strong>
                                 </p>
-                                <p class="rightHandFront">{{ trait.rightHandFront }}</p>
+                                <p class="rightHandFront trait-name">{{ trait.rightHandFront }}</p>
                                 <p class="rarity-index" v-if="trait.rarity">1 of {{ trait.rarity }}</p>
                                 <p class="rarity-index" v-else>1 of {{ TOTAL_WIZARDS }}</p>
                                 <p class="rarity-percentage">{{ getPrettyRarity(trait.rarity) }}% have this trait</p>
                                 <p class="extra-rare" v-if="trait.extraRare">
-                                    <span>Rare trait: {{ trait.extraRare }} collection!</span>
+                                    <span>Rare trait: {{ trait.extraRare }}</span>
                                 </p>
                             </div>
 
@@ -354,12 +372,12 @@
                                 <p class="wand label">
                                     <strong>Wand</strong>
                                 </p>
-                                <p class="wand">{{ trait.wand }}</p>
+                                <p class="wand trait-name">{{ trait.wand }}</p>
                                 <p class="rarity-index" v-if="trait.rarity">1 of {{ trait.rarity }}</p>
                                 <p class="rarity-index" v-else>1 of {{ TOTAL_WIZARDS }}</p>
                                 <p class="rarity-percentage">{{ getPrettyRarity(trait.rarity) }}% have this trait</p>
                                 <p class="extra-rare" v-if="trait.extraRare">
-                                    <span>Rare trait: {{ trait.extraRare }} collection!</span>
+                                    <span>Rare trait: {{ trait.extraRare }}</span>
                                 </p>
                             </div>
                         </div>
@@ -369,28 +387,28 @@
         </div>
 
         <!-- Match Predictor -->
-        <div class="row match-predictor" v-if="navigation.state == PREDICT_MATCHES">
+        <div class="match-predictor" v-if="navigation.state == PREDICT_MATCHES">
             <h5>Match Predictor</h5>
 
             <!-- Enter Wizards to Compare -->
-            <div class="choose-wizard row">
-                <p class="row current-wizard-label">
+            <div class="choose-wizard">
+                <p class="current-wizard-label">
                     <label for="current_wizard">My Wizard:</label>
                 </p>
                 <input type="number" name="current_wizard" min="0" max="99999" v-model="currentWizard.selectedId" placeholder="Enter your Wizard ID here">
             </div>
-            <div class="choose-opponent row">
-                <p class="row opponent-wizard-label">
+            <div class="choose-opponent">
+                <p class="opponent-wizard-label">
                     <label for="current_wizard">My Opponent's Wizard:</label>
                 </p>
                 <input type="number" name="opposing_wizard" min="0" max="99999" v-model="currentOpposingWizard.selectedId" placeholder="Enter opponent's Wizard ID here">
             </div>
-            <div class="predict predict-btn row">
+            <div class="predict predict-btn">
                 <button class="btn btn-primary" v-on:click="predictMatchOutcome(currentWizard.selectedId, currentOpposingWizard.selectedId);" :disabled="!currentWizard || !currentOpposingWizard">Compare Wizards</button>
             </div>
 
             <!-- Prediction Results -->
-            <div class="match-prediction row" v-if="matchPrediction">
+            <div class="match-prediction" v-if="matchPrediction">
                 <!-- Nothing to predict -->
                 <div class="invalid-prediction" v-if="predictionType == PREDICTION_UNAVAILABLE">
                     <p>Wizard #{{currentWizard.id}} and Wizard #{{ currentOpposingWizard.id }} appear to be evenly matched!</p>
@@ -430,7 +448,7 @@
                 </div>
 
                 <!-- Your Wizard -->
-                <div class="row view-wizard-details" v-if="matchPrediction">
+                <div class="view-wizard-details" v-if="matchPrediction">
                     <div class="single-wizard my-wizard jumbotron" v-if="currentWizard">
                         
                         <h1 class="display-4">Your Wizard:</h1>
@@ -470,14 +488,208 @@
                         </div>
                         <div>
                         </div>
-                        <div class="cheese-wizard-image cheese-wizard-image-small">
-                            <img class="img-fluid" :src="currentWizard.image">
+                        <div class="cheese-wizard-image my-wizard-img" :style="'background-image: url(' + currentWizard.image + ')'">
+                            <!--
+                            <div class="cheese-wizard-image cheese-wizard-image-small">
+                                <img class="img-fluid" :src="currentWizard.image">
+                            </div>
+                            -->
+                        </div>
+                        <!-- Traits -->
+                        <div class="show-my-traits">
+                            <a v-on:click="showMyWizardTraits = true" v-if="!showMyWizardTraits">Show unique traits</a>
+                            <a v-on:click="showMyWizardTraits = false" v-if="showMyWizardTraits">Hide traits</a>
+                        </div>
+                        <div class="traits traits-container wizards-compare" v-if="currentWizard.traits && showMyWizardTraits">
+                            <div class="traits traits-container-inner" v-if="currentWizard.traits.rarities">
+                                <div class="block-grid-xs-2 block-grid-sm-3 block-grid-md-4" v-if="currentWizard.traits.rarities.length">
+                                    <div class="block-item block-item-outer" v-if="currentWizard.traits.affinityStats && currentWizard.specialPower && currentWizard.specialPower !== 'Unknown'">
+                                        
+                                        <!-- Affinity Trait -->
+                                        <div class="block-item block-item-inner affinity">
+                                            <p class="affinity label">
+                                                <strong>Affinity Type</strong>
+                                            </p>
+                                            <p class="affinity trait-name">{{ currentWizard.specialPower }}</p>
+                                            <p class="rarity-index">1 of {{ currentWizard.traits.affinityStats[currentWizard.specialPower] }}</p>
+                                            <p class="rarity-percentage">{{ getPrettyRarity(currentWizard.traits.affinityStats[currentWizard.specialPower]) }}% have this trait</p>
+                                        </div>
+                                    </div>
+            
+                                    <!-- Elemental Trait -->
+                                    <div class="block-item block-item-outer" v-if="currentWizard.traits.affinityStats && currentWizard.specialPower !== 'Neutral' && currentWizard.specialPower !== 'Unknown'">
+                                        <div class="block-item block-item-inner elemental">
+                                            <p class="elemental label">
+                                                <strong>Elemental</strong>
+                                            </p>
+                                            <p class="rarity-index">1 of {{ currentWizard.traits.affinityStats.totalWizardsHavingAffinity }}</p>
+                                            <p class="rarity-percentage">{{ getPrettyRarity(currentWizard.traits.affinityStats.totalWizardsHavingAffinity) }}% have this trait</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="block-item block-item-outer" v-for="(trait, index) in currentWizard.traits.rarities">
+                                        <!-- Backneck Trait -->
+                                        <div class="block-item block-item-inner backneck" v-if="trait.backneck">
+                                            <p class="backneck label">
+                                                <strong>Backneck</strong>
+                                            </p>
+                                            <p class="backneck trait-name">{{ trait.backneck }}</p>
+                                            <p class="rarity-index" v-if="trait.rarity">1 of {{ trait.rarity }}</p>
+                                            <p class="rarity-index" v-else>1 of {{ TOTAL_WIZARDS }}</p>
+                                            <p class="rarity-percentage">{{ getPrettyRarity(trait.rarity) }}% have this trait</p>
+                                            <p class="extra-rare" v-if="trait.extraRare">
+                                                <span>Rare trait: {{ trait.extraRare }}</span>
+                                            </p>
+                                        </div>
+            
+                                        <!-- Boots Trait -->
+                                        <div class="block-item block-item-inner boots" v-if="trait.boots">
+                                            <p class="backneck label">
+                                                <strong>Boots</strong>
+                                            </p>
+                                            <p class="boots trait-name">{{ trait.boots }}</p>
+                                            <p class="rarity-index" v-if="trait.rarity">1 of {{ trait.rarity }}</p>
+                                            <p class="rarity-index" v-else>1 of {{ TOTAL_WIZARDS }}</p>
+                                            <p class="rarity-percentage">{{ getPrettyRarity(trait.rarity) }}% have this trait</p>
+                                            <p class="extra-rare" v-if="trait.extraRare">
+                                                <span>Rare trait: {{ trait.extraRare }}</span>
+                                            </p>
+                                        </div>
+            
+                                        <!-- Cape Trait -->
+                                        <div class="block-item block-item-inner cape" v-if="trait.cape">
+                                            <p class="cape label">
+                                                <strong>Cape</strong>
+                                            </p>
+                                            <p class="cape trait-name">{{ trait.cape }}</p>
+                                            <p class="rarity-index" v-if="trait.rarity">1 of {{ trait.rarity }}</p>
+                                            <p class="rarity-index" v-else>1 of {{ TOTAL_WIZARDS }}</p>
+                                            <p class="rarity-percentage">{{ getPrettyRarity(trait.rarity) }}% have this trait</p>
+                                            <p class="extra-rare" v-if="trait.extraRare">
+                                                <span>Rare trait: {{ trait.extraRare }}</span>
+                                            </p>
+                                        </div>
+            
+                                        <!-- Expression Trait -->
+                                        <div class="block-item block-item-inner expression" v-if="trait.expression">
+                                            <p class="expression label">
+                                                <strong>Expression</strong>
+                                            </p>
+                                            <p class="expression trait-name">{{ trait.expression }}</p>
+                                            <p class="rarity-index" v-if="trait.rarity">1 of {{ trait.rarity }}</p>
+                                            <p class="rarity-index" v-else>1 of {{ TOTAL_WIZARDS }}</p>
+                                            <p class="rarity-percentage">{{ getPrettyRarity(trait.rarity) }}% have this trait</p>
+                                            <p class="extra-rare" v-if="trait.extraRare">
+                                                <span>Rare trait: {{ trait.extraRare }}</span>
+                                            </p>
+                                        </div>
+            
+                                        <!-- Head Trait -->
+                                        <div class="block-item block-item-inner head" v-if="trait.head">
+                                            <p class="head label">
+                                                <strong>Head</strong>
+                                            </p>
+                                            <p class="head trait-name">{{ trait.head }}</p>
+                                            <p class="rarity-index" v-if="trait.rarity">1 of {{ trait.rarity }}</p>
+                                            <p class="rarity-index" v-else>1 of {{ TOTAL_WIZARDS }}</p>
+                                            <p class="rarity-percentage">{{ getPrettyRarity(trait.rarity) }}% have this trait</p>
+                                            <p class="extra-rare" v-if="trait.extraRare">
+                                                <span>Rare trait: {{ trait.extraRare }}</span>
+                                            </p>
+                                        </div>
+            
+                                        <!-- Hat Trait -->
+                                        <div class="block-item block-item-inner hat" v-if="trait.hat">
+                                            <p class="hat label">
+                                                <strong>Hat</strong>
+                                            </p>
+                                            <p class="hat trait-name">{{ trait.hat }}</p>
+                                            <p class="rarity-index" v-if="trait.rarity">1 of {{ trait.rarity }}</p>
+                                            <p class="rarity-index" v-else>1 of {{ TOTAL_WIZARDS }}</p>
+                                            <p class="rarity-percentage">{{ getPrettyRarity(trait.rarity) }}% have this trait</p>
+                                            <p class="extra-rare" v-if="trait.extraRare">
+                                                <span>Rare trait: {{ trait.extraRare }}</span>
+                                            </p>
+                                        </div>
+            
+                                        <!-- Left Hand Back Trait -->
+                                        <div class="block-item block-item-inner leftHandBack" v-if="trait.leftHandBack">
+                                            <p class="leftHandBack label">
+                                                <strong>Left Hand Back</strong>
+                                            </p>
+                                            <p class="leftHandBack trait-name">{{ trait.leftHandBack }}</p>
+                                            <p class="rarity-index" v-if="trait.rarity">1 of {{ trait.rarity }}</p>
+                                            <p class="rarity-index" v-else>1 of {{ TOTAL_WIZARDS }}</p>
+                                            <p class="rarity-percentage">{{ getPrettyRarity(trait.rarity) }}% have this trait</p>
+                                            <p class="extra-rare" v-if="trait.extraRare">
+                                                <span>Rare trait: {{ trait.extraRare }}</span>
+                                            </p>
+                                        </div>
+            
+                                        <!-- Left Hand Front Trait -->
+                                        <div class="block-item block-item-inner leftHhandFront" v-if="trait.leftHhandFront">
+                                            <p class="leftHandBack label">
+                                                <strong>Left Hand Front</strong>
+                                            </p>
+                                            <p class="leftHandFront trait-name">{{ trait.leftHhandFront }}</p>
+                                            <p class="rarity-index" v-if="trait.rarity">1 of {{ trait.rarity }}</p>
+                                            <p class="rarity-index" v-else>1 of {{ TOTAL_WIZARDS }}</p>
+                                            <p class="rarity-percentage">{{ getPrettyRarity(trait.rarity) }}% have this trait</p>
+                                            <p class="extra-rare" v-if="trait.extraRare">
+                                                <span>Rare trait: {{ trait.extraRare }}</span>
+                                            </p>
+                                        </div>
+            
+                                        <!-- Legs Trait -->
+                                        <div class="block-item block-item-inner legs" v-if="trait.legs">
+                                            <p class="legs label">
+                                                <strong>Legs</strong>
+                                            </p>
+                                            <p class="legs trait-name">{{ trait.legs }}</p>
+                                            <p class="rarity-index" v-if="trait.rarity">1 of {{ trait.rarity }}</p>
+                                            <p class="rarity-index" v-else>1 of {{ TOTAL_WIZARDS }}</p>
+                                            <p class="rarity-percentage">{{ getPrettyRarity(trait.rarity) }}% have this trait</p>
+                                            <p class="extra-rare" v-if="trait.extraRare">
+                                                <span>Rare trait: {{ trait.extraRare }}</span>
+                                            </p>
+                                        </div>
+            
+                                        <!-- Right Hand Front Trait -->
+                                        <div class="block-item block-item-inner rightHandFront" v-if="trait.rightHandFront">
+                                            <p class="rightHandFront label">
+                                                <strong>Right Hand Front</strong>
+                                            </p>
+                                            <p class="rightHandFront trait-name">{{ trait.rightHandFront }}</p>
+                                            <p class="rarity-index" v-if="trait.rarity">1 of {{ trait.rarity }}</p>
+                                            <p class="rarity-index" v-else>1 of {{ TOTAL_WIZARDS }}</p>
+                                            <p class="rarity-percentage">{{ getPrettyRarity(trait.rarity) }}% have this trait</p>
+                                            <p class="extra-rare" v-if="trait.extraRare">
+                                                <span>Rare trait: {{ trait.extraRare }}</span>
+                                            </p>
+                                        </div>
+            
+                                        <!-- Wand Trait -->
+                                        <div class="block-item block-item-inner wand" v-if="trait.wand">
+                                            <p class="wand label">
+                                                <strong>Wand</strong>
+                                            </p>
+                                            <p class="wand trait-name">{{ trait.wand }}</p>
+                                            <p class="rarity-index" v-if="trait.rarity">1 of {{ trait.rarity }}</p>
+                                            <p class="rarity-index" v-else>1 of {{ TOTAL_WIZARDS }}</p>
+                                            <p class="rarity-percentage">{{ getPrettyRarity(trait.rarity) }}% have this trait</p>
+                                            <p class="extra-rare" v-if="trait.extraRare">
+                                                <span>Rare trait: {{ trait.extraRare }}</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Opponent's Wizard -->
-                <div class="row view-wizard-details" v-if="matchPrediction">
+                <div class="view-wizard-details" v-if="matchPrediction">
                     <div class="single-wizard opponent-wizard jumbotron" v-if="currentOpposingWizard">
 
                         <h1 class="display-4">Opponent's Wizard:</h1>
@@ -515,8 +727,203 @@
                                 <strong>Lifetime Power Growth:</strong> {{ getPrettyPowerLevel(currentOpposingWizard.power - currentOpposingWizard.initialPower) }}
                             </p>
                         </div>
-                        <div class="cheese-wizard-image cheese-wizard-image-small">
-                            <img class="img-fluid" :src="currentOpposingWizard.image">
+                        <div class="cheese-wizard-image selected-opponent-img" :style="'background-image: url(' + currentOpposingWizard.image + ')'">
+                            <!--
+                            <div class="cheese-wizard-image cheese-wizard-image-small">
+                                <img class="img-fluid" :src="currentOpposingWizard.image">
+                            </div>
+                            -->
+                        </div>
+
+                        <!-- Traits -->
+                        <div class="show-opponent-traits">
+                            <a v-on:click="showOpponentTraits = true" v-if="!showOpponentTraits">Show unique traits</a>
+                            <a v-on:click="showOpponentTraits = false" v-if="showOpponentTraits">Hide traits</a>
+                        </div>
+                        <div class="traits traits-container wizards-compare" v-if="currentOpposingWizard.traits && showOpponentTraits">
+                            <div class="traits traits-container-inner" v-if="currentOpposingWizard.traits.rarities">
+                                <div class="block-grid-xs-2 block-grid-sm-3 block-grid-md-4" v-if="currentOpposingWizard.traits.rarities.length">
+                                    <div class="block-item block-item-outer" v-if="currentOpposingWizard.traits.affinityStats && currentOpposingWizard.specialPower && currentOpposingWizard.specialPower !== 'Unknown'">
+                                        
+                                        <!-- Affinity Trait -->
+                                        <div class="block-item block-item-inner affinity">
+                                            <p class="affinity label">
+                                                <strong>Affinity Type</strong>
+                                            </p>
+                                            <p class="affinity trait-name">{{ currentOpposingWizard.specialPower }}</p>
+                                            <p class="rarity-index">1 of {{ currentOpposingWizard.traits.affinityStats[currentOpposingWizard.specialPower] }}</p>
+                                            <p class="rarity-percentage">{{ getPrettyRarity(currentOpposingWizard.traits.affinityStats[currentOpposingWizard.specialPower]) }}% have this trait</p>
+                                        </div>
+                                    </div>
+            
+                                    <!-- Elemental Trait -->
+                                    <div class="block-item block-item-outer" v-if="currentOpposingWizard.traits.affinityStats && currentOpposingWizard.specialPower !== 'Neutral' && currentOpposingWizard.specialPower !== 'Unknown'">
+                                        <div class="block-item block-item-inner elemental">
+                                            <p class="elemental label">
+                                                <strong>Elemental</strong>
+                                            </p>
+                                            <p class="rarity-index">1 of {{ currentOpposingWizard.traits.affinityStats.totalWizardsHavingAffinity }}</p>
+                                            <p class="rarity-percentage">{{ getPrettyRarity(currentOpposingWizard.traits.affinityStats.totalWizardsHavingAffinity) }}% have this trait</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="block-item block-item-outer" v-for="(trait, index) in currentOpposingWizard.traits.rarities">
+                                        <!-- Backneck Trait -->
+                                        <div class="block-item block-item-inner backneck" v-if="trait.backneck">
+                                            <p class="backneck label">
+                                                <strong>Backneck</strong>
+                                            </p>
+                                            <p class="backneck trait-name">{{ trait.backneck }}</p>
+                                            <p class="rarity-index" v-if="trait.rarity">1 of {{ trait.rarity }}</p>
+                                            <p class="rarity-index" v-else>1 of {{ TOTAL_WIZARDS }}</p>
+                                            <p class="rarity-percentage">{{ getPrettyRarity(trait.rarity) }}% have this trait</p>
+                                            <p class="extra-rare" v-if="trait.extraRare">
+                                                <span>Rare trait: {{ trait.extraRare }}</span>
+                                            </p>
+                                        </div>
+            
+                                        <!-- Boots Trait -->
+                                        <div class="block-item block-item-inner boots" v-if="trait.boots">
+                                            <p class="backneck label">
+                                                <strong>Boots</strong>
+                                            </p>
+                                            <p class="boots trait-name">{{ trait.boots }}</p>
+                                            <p class="rarity-index" v-if="trait.rarity">1 of {{ trait.rarity }}</p>
+                                            <p class="rarity-index" v-else>1 of {{ TOTAL_WIZARDS }}</p>
+                                            <p class="rarity-percentage">{{ getPrettyRarity(trait.rarity) }}% have this trait</p>
+                                            <p class="extra-rare" v-if="trait.extraRare">
+                                                <span>Rare trait: {{ trait.extraRare }}</span>
+                                            </p>
+                                        </div>
+            
+                                        <!-- Cape Trait -->
+                                        <div class="block-item block-item-inner cape" v-if="trait.cape">
+                                            <p class="cape label">
+                                                <strong>Cape</strong>
+                                            </p>
+                                            <p class="cape trait-name">{{ trait.cape }}</p>
+                                            <p class="rarity-index" v-if="trait.rarity">1 of {{ trait.rarity }}</p>
+                                            <p class="rarity-index" v-else>1 of {{ TOTAL_WIZARDS }}</p>
+                                            <p class="rarity-percentage">{{ getPrettyRarity(trait.rarity) }}% have this trait</p>
+                                            <p class="extra-rare" v-if="trait.extraRare">
+                                                <span>Rare trait: {{ trait.extraRare }}</span>
+                                            </p>
+                                        </div>
+            
+                                        <!-- Expression Trait -->
+                                        <div class="block-item block-item-inner expression" v-if="trait.expression">
+                                            <p class="expression label">
+                                                <strong>Expression</strong>
+                                            </p>
+                                            <p class="expression trait-name">{{ trait.expression }}</p>
+                                            <p class="rarity-index" v-if="trait.rarity">1 of {{ trait.rarity }}</p>
+                                            <p class="rarity-index" v-else>1 of {{ TOTAL_WIZARDS }}</p>
+                                            <p class="rarity-percentage">{{ getPrettyRarity(trait.rarity) }}% have this trait</p>
+                                            <p class="extra-rare" v-if="trait.extraRare">
+                                                <span>Rare trait: {{ trait.extraRare }}</span>
+                                            </p>
+                                        </div>
+            
+                                        <!-- Head Trait -->
+                                        <div class="block-item block-item-inner head" v-if="trait.head">
+                                            <p class="head label">
+                                                <strong>Head</strong>
+                                            </p>
+                                            <p class="head trait-name">{{ trait.head }}</p>
+                                            <p class="rarity-index" v-if="trait.rarity">1 of {{ trait.rarity }}</p>
+                                            <p class="rarity-index" v-else>1 of {{ TOTAL_WIZARDS }}</p>
+                                            <p class="rarity-percentage">{{ getPrettyRarity(trait.rarity) }}% have this trait</p>
+                                            <p class="extra-rare" v-if="trait.extraRare">
+                                                <span>Rare trait: {{ trait.extraRare }}</span>
+                                            </p>
+                                        </div>
+            
+                                        <!-- Hat Trait -->
+                                        <div class="block-item block-item-inner hat" v-if="trait.hat">
+                                            <p class="hat label">
+                                                <strong>Hat</strong>
+                                            </p>
+                                            <p class="hat trait-name">{{ trait.hat }}</p>
+                                            <p class="rarity-index" v-if="trait.rarity">1 of {{ trait.rarity }}</p>
+                                            <p class="rarity-index" v-else>1 of {{ TOTAL_WIZARDS }}</p>
+                                            <p class="rarity-percentage">{{ getPrettyRarity(trait.rarity) }}% have this trait</p>
+                                            <p class="extra-rare" v-if="trait.extraRare">
+                                                <span>Rare trait: {{ trait.extraRare }}</span>
+                                            </p>
+                                        </div>
+            
+                                        <!-- Left Hand Back Trait -->
+                                        <div class="block-item block-item-inner leftHandBack" v-if="trait.leftHandBack">
+                                            <p class="leftHandBack label">
+                                                <strong>Left Hand Back</strong>
+                                            </p>
+                                            <p class="leftHandBack trait-name">{{ trait.leftHandBack }}</p>
+                                            <p class="rarity-index" v-if="trait.rarity">1 of {{ trait.rarity }}</p>
+                                            <p class="rarity-index" v-else>1 of {{ TOTAL_WIZARDS }}</p>
+                                            <p class="rarity-percentage">{{ getPrettyRarity(trait.rarity) }}% have this trait</p>
+                                            <p class="extra-rare" v-if="trait.extraRare">
+                                                <span>Rare trait: {{ trait.extraRare }}</span>
+                                            </p>
+                                        </div>
+            
+                                        <!-- Left Hand Front Trait -->
+                                        <div class="block-item block-item-inner leftHhandFront" v-if="trait.leftHhandFront">
+                                            <p class="leftHandBack label">
+                                                <strong>Left Hand Front</strong>
+                                            </p>
+                                            <p class="leftHandFront trait-name">{{ trait.leftHhandFront }}</p>
+                                            <p class="rarity-index" v-if="trait.rarity">1 of {{ trait.rarity }}</p>
+                                            <p class="rarity-index" v-else>1 of {{ TOTAL_WIZARDS }}</p>
+                                            <p class="rarity-percentage">{{ getPrettyRarity(trait.rarity) }}% have this trait</p>
+                                            <p class="extra-rare" v-if="trait.extraRare">
+                                                <span>Rare trait: {{ trait.extraRare }}</span>
+                                            </p>
+                                        </div>
+            
+                                        <!-- Legs Trait -->
+                                        <div class="block-item block-item-inner legs" v-if="trait.legs">
+                                            <p class="legs label">
+                                                <strong>Legs</strong>
+                                            </p>
+                                            <p class="legs trait-name">{{ trait.legs }}</p>
+                                            <p class="rarity-index" v-if="trait.rarity">1 of {{ trait.rarity }}</p>
+                                            <p class="rarity-index" v-else>1 of {{ TOTAL_WIZARDS }}</p>
+                                            <p class="rarity-percentage">{{ getPrettyRarity(trait.rarity) }}% have this trait</p>
+                                            <p class="extra-rare" v-if="trait.extraRare">
+                                                <span>Rare trait: {{ trait.extraRare }}</span>
+                                            </p>
+                                        </div>
+            
+                                        <!-- Right Hand Front Trait -->
+                                        <div class="block-item block-item-inner rightHandFront" v-if="trait.rightHandFront">
+                                            <p class="rightHandFront label">
+                                                <strong>Right Hand Front</strong>
+                                            </p>
+                                            <p class="rightHandFront trait-name">{{ trait.rightHandFront }}</p>
+                                            <p class="rarity-index" v-if="trait.rarity">1 of {{ trait.rarity }}</p>
+                                            <p class="rarity-index" v-else>1 of {{ TOTAL_WIZARDS }}</p>
+                                            <p class="rarity-percentage">{{ getPrettyRarity(trait.rarity) }}% have this trait</p>
+                                            <p class="extra-rare" v-if="trait.extraRare">
+                                                <span>Rare trait: {{ trait.extraRare }}</span>
+                                            </p>
+                                        </div>
+            
+                                        <!-- Wand Trait -->
+                                        <div class="block-item block-item-inner wand" v-if="trait.wand">
+                                            <p class="wand label">
+                                                <strong>Wand</strong>
+                                            </p>
+                                            <p class="wand trait-name">{{ trait.wand }}</p>
+                                            <p class="rarity-index" v-if="trait.rarity">1 of {{ trait.rarity }}</p>
+                                            <p class="rarity-index" v-else>1 of {{ TOTAL_WIZARDS }}</p>
+                                            <p class="rarity-percentage">{{ getPrettyRarity(trait.rarity) }}% have this trait</p>
+                                            <p class="extra-rare" v-if="trait.extraRare">
+                                                <span>Rare trait: {{ trait.extraRare }}</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
